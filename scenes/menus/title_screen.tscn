@@ -48,11 +48,12 @@ animations = [{
 "speed": 24.0
 }]
 
-[node name="TitleScreen" type="Control"]
+[node name="TitleScreen" type="Control" node_paths=PackedStringArray("mute_button")]
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2
 script = ExtResource("1_eqhve")
+mute_button = NodePath("mute_button")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 visible = false
@@ -61,7 +62,7 @@ sprite_frames = SubResource("SpriteFrames_jhqb3")
 autoplay = "default"
 frame_progress = 0.7238249
 
-[node name="Label" type="Label" parent="."]
+[node name="main_logo" type="Label" parent="."]
 layout_mode = 0
 offset_left = -240.0
 offset_top = 44.0
@@ -72,38 +73,53 @@ theme_override_font_sizes/font_size = 76
 text = "carsonist"
 horizontal_alignment = 1
 
+[node name="mute_button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 947.0
+offset_top = 17.0
+offset_right = 1129.0
+offset_bottom = 88.0
+text = "mute"
+alignment = 2
+
 [node name="play_button" type="Button" parent="."]
 layout_mode = 0
-offset_left = 66.0
-offset_top = 197.0
-offset_right = 280.0
-offset_bottom = 373.0
+offset_left = 94.0
+offset_top = 186.0
+offset_right = 240.0
+offset_bottom = 307.0
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 100
 text = "Play"
+metadata/_edit_lock_ = true
 
 [node name="settings_button" type="Button" parent="."]
 layout_mode = 0
-offset_left = 119.0
-offset_top = 325.0
-offset_right = 519.0
-offset_bottom = 490.0
+offset_left = 148.0
+offset_top = 317.0
+offset_right = 437.0
+offset_bottom = 438.0
 theme_override_font_sizes/font_size = 100
 text = "settings"
+metadata/_edit_lock_ = true
 
 [node name="exit_button" type="Button" parent="."]
 layout_mode = 0
-offset_left = 371.0
-offset_top = 441.0
-offset_right = 538.0
-offset_bottom = 606.0
+offset_left = 301.0
+offset_top = 448.0
+offset_right = 590.0
+offset_bottom = 569.0
 theme_override_font_sizes/font_size = 100
 text = "exit"
+metadata/_edit_lock_ = true
 
-[node name="859Dbf114a1Ce5c4326648c2Fe624259" type="Sprite2D" parent="."]
+[node name="background_placeholder" type="Sprite2D" parent="."]
 z_index = -6
 texture_repeat = 2
-position = Vector2(590, 587)
+position = Vector2(580, 581)
 texture = ExtResource("4_qc2aw")
+metadata/_edit_lock_ = true
 
+[connection signal="pressed" from="mute_button" to="." method="_on_mute_button_pressed"]
 [connection signal="pressed" from="play_button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="settings_button" to="." method="_on_settings_button_pressed"]
