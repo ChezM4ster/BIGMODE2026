@@ -1,7 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://b7w7umtdowoql"]
+[gd_scene load_steps=11 format=3 uid="uid://b7w7umtdowoql"]
 
 [ext_resource type="Script" uid="uid://27mj3ldqkxoh" path="res://src/menus/title_screen.gd" id="1_eqhve"]
 [ext_resource type="Texture2D" uid="uid://dvmt0l6i4lq17" path="res://assets/logo/cooltext501160769867111-ezgif.com-gif-to-sprite-converter.png" id="1_n17qi"]
+[ext_resource type="FontFile" uid="uid://beedmhip7yqxn" path="res://assets/Mustasurma.ttf" id="3_yx444"]
+[ext_resource type="Texture2D" uid="uid://dolbmnyv762gt" path="res://assets/859dbf114a1ce5c4326648c2fe624259.jpg" id="4_qc2aw"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eqhve"]
 atlas = ExtResource("1_n17qi")
@@ -53,20 +55,55 @@ mouse_filter = 2
 script = ExtResource("1_eqhve")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
 position = Vector2(185, 56)
 sprite_frames = SubResource("SpriteFrames_jhqb3")
 autoplay = "default"
 frame_progress = 0.7238249
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-offset_top = 300.0
-offset_right = 41.0
-offset_bottom = 331.0
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = -240.0
+offset_top = 44.0
+offset_right = 845.0
+offset_bottom = 201.0
+theme_override_fonts/font = ExtResource("3_yx444")
+theme_override_font_sizes/font_size = 76
+text = "carsonist"
+horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="VBoxContainer"]
-layout_mode = 2
+[node name="play_button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 66.0
+offset_top = 197.0
+offset_right = 280.0
+offset_bottom = 373.0
 size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 100
 text = "Play"
 
-[connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
+[node name="settings_button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 119.0
+offset_top = 325.0
+offset_right = 519.0
+offset_bottom = 490.0
+theme_override_font_sizes/font_size = 100
+text = "settings"
+
+[node name="exit_button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 371.0
+offset_top = 441.0
+offset_right = 538.0
+offset_bottom = 606.0
+theme_override_font_sizes/font_size = 100
+text = "exit"
+
+[node name="859Dbf114a1Ce5c4326648c2Fe624259" type="Sprite2D" parent="."]
+z_index = -6
+texture_repeat = 2
+position = Vector2(590, 587)
+texture = ExtResource("4_qc2aw")
+
+[connection signal="pressed" from="play_button" to="." method="_on_button_pressed"]

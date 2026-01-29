@@ -18,3 +18,12 @@ config/icon="res://icon.svg"
 [autoload]
 
 SceneTransition="*res://scenes/autoloads/scene_transition.tscn"
+
+[gui]
+
+theme/custom="uid://b5ji6r7ph0syw"
+theme/custom_font="uid://b6e453q8ghnpv"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
