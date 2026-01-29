@@ -11,5 +11,10 @@ config_version=5
 [application]
 
 config/name="BIGMODE GAMEJAM 2026"
+run/main_scene="uid://b7w7umtdowoql"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SceneTransition="*res://scenes/autoloads/scene_transition.tscn"

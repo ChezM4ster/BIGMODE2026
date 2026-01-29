@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://dllsagbps1f2x"]
+
+[ext_resource type="Texture2D" uid="uid://cpumymsqeakmo" path="res://icon.svg" id="1_xgkye"]
+
+[node name="TestScene" type="Node2D"]
+
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(583, 287)
+scale = Vector2(0.8125, 0.8125)
+texture = ExtResource("1_xgkye")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0

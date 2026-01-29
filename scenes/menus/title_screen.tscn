@@ -1,0 +1,72 @@
+[gd_scene load_steps=9 format=3 uid="uid://b7w7umtdowoql"]
+
+[ext_resource type="Script" uid="uid://27mj3ldqkxoh" path="res://src/menus/title_screen.gd" id="1_eqhve"]
+[ext_resource type="Texture2D" uid="uid://dvmt0l6i4lq17" path="res://assets/logo/cooltext501160769867111-ezgif.com-gif-to-sprite-converter.png" id="1_n17qi"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eqhve"]
+atlas = ExtResource("1_n17qi")
+region = Rect2(0, 0, 328, 91)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yx444"]
+atlas = ExtResource("1_n17qi")
+region = Rect2(328, 0, 328, 91)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qc2aw"]
+atlas = ExtResource("1_n17qi")
+region = Rect2(656, 0, 328, 91)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vudbd"]
+atlas = ExtResource("1_n17qi")
+region = Rect2(984, 0, 328, 91)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ptv5j"]
+atlas = ExtResource("1_n17qi")
+region = Rect2(1312, 0, 328, 91)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jhqb3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eqhve")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yx444")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qc2aw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vudbd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ptv5j")
+}],
+"loop": true,
+"name": &"default",
+"speed": 24.0
+}]
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("1_eqhve")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(185, 56)
+sprite_frames = SubResource("SpriteFrames_jhqb3")
+autoplay = "default"
+frame_progress = 0.7238249
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+offset_top = 300.0
+offset_right = 41.0
+offset_bottom = 331.0
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Play"
+
+[connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_button_pressed"]
