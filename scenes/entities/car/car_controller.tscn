@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://d2tgftykfff67"]
+
+[ext_resource type="PackedScene" uid="uid://vqjk61bg3ged" path="res://assets/models/car/car_model.tscn" id="1_7ri6m"]
+[ext_resource type="Script" uid="uid://d4m86pnh5mudt" path="res://src/entities/car/car_controller.gd" id="1_p8s8u"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p8s8u"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_p8s8u"]
+radius = 0.11921124
+
+[node name="CarController" type="Node3D"]
+script = ExtResource("1_p8s8u")
+
+[node name="CarModel" parent="." instance=ExtResource("1_7ri6m")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="CameraRig" type="Node3D" parent="CarModel"]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CarModel/CameraRig"]
+transform = Transform3D(1, 0, 0, 0, 0.9514924, 0.30767214, 0, -0.30767214, 0.9514924, 0, 2.3139334, 3.5844767)
+current = true
+
+[node name="GroundRay" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.058990538, 0)
+target_position = Vector3(0, -2.32, 0)
+
+[node name="Ball" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0914588, 0)
+physics_material_override = SubResource("PhysicsMaterial_p8s8u")
+linear_damp = 2.0
+angular_damp = 5.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ball"]
+shape = SubResource("SphereShape3D_p8s8u")
+
+[editable path="CarModel"]
