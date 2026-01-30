@@ -1,14 +1,42 @@
-[gd_scene load_steps=2 format=3 uid="uid://dllsagbps1f2x"]
+[gd_scene load_steps=5 format=3 uid="uid://dllsagbps1f2x"]
 
+[ext_resource type="Script" uid="uid://vd1v4ber1iwv" path="res://src/Game Logic/test_cam.gd" id="1_ad8uc"]
 [ext_resource type="Texture2D" uid="uid://cpumymsqeakmo" path="res://icon.svg" id="1_xgkye"]
+[ext_resource type="PackedScene" uid="uid://dwrorxv4a4qhp" path="res://scenes/Objs/road_piece.tscn" id="2_bfhv8"]
+[ext_resource type="Script" uid="uid://lvpcckewqq46" path="res://src/Game Logic/road_maker.gd" id="3_kljt5"]
 
-[node name="TestScene" type="Node2D"]
+[node name="TestScene" type="Node3D"]
+
+[node name="MainCam" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 14.026315, 0)
+script = ExtResource("1_ad8uc")
 
 [node name="Icon" type="Sprite2D" parent="."]
+visible = false
 position = Vector2(583, 287)
 scale = Vector2(0.8125, 0.8125)
 texture = ExtResource("1_xgkye")
 
 [node name="Label" type="Label" parent="."]
+visible = false
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="RoadPiece1" parent="." instance=ExtResource("2_bfhv8")]
+
+[node name="RoadPiece2" parent="." instance=ExtResource("2_bfhv8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -250)
+
+[node name="RoadPiece3" parent="." instance=ExtResource("2_bfhv8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -500)
+
+[node name="RoadPiece4" parent="." instance=ExtResource("2_bfhv8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -749)
+
+[node name="RoadPiece5" parent="." instance=ExtResource("2_bfhv8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -999)
+
+[node name="RoadMaker" type="Node3D" parent="." node_paths=PackedStringArray("roadPieces", "cam")]
+script = ExtResource("3_kljt5")
+roadPieces = [NodePath("../RoadPiece1"), NodePath("../RoadPiece2"), NodePath("../RoadPiece3"), NodePath("../RoadPiece4"), NodePath("../RoadPiece5")]
+cam = NodePath("../MainCam")
