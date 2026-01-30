@@ -10,7 +10,6 @@ radius = 0.11921124
 
 [node name="CarController" type="Node3D"]
 script = ExtResource("1_p8s8u")
-acceleration = 60.0
 camera_tilt_speed = 3.0
 
 [node name="CarModel" parent="." instance=ExtResource("1_7ri6m")]

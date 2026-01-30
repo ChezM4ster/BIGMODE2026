@@ -31,6 +31,8 @@ shadow_enabled = true
 
 [node name="CarController" parent="." instance=ExtResource("1_7304e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3546852, 0)
+acceleration = 60.0
+steering = 20.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_etk4d")
