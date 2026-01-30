@@ -14,5 +14,4 @@ func _on_mute_button_pressed() -> void:
 		mute_button.text = "mute"
 
 func _on_settings_button_pressed() -> void:
-	
 	SceneTransition.change_scene("res://scenes/menus/MainMenu.tscn")

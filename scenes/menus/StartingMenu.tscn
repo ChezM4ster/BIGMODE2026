@@ -1,0 +1,40 @@
+[gd_scene load_steps=4 format=3 uid="uid://rn5ngkr55sir"]
+
+[ext_resource type="Script" uid="uid://c0pavvsupsy5j" path="res://scenes/menus/starting_menu.gd" id="1_6sw3n"]
+[ext_resource type="Script" uid="uid://b0ss7tn7120vn" path="res://src/menus/SoundButton.gd" id="2_epabg"]
+[ext_resource type="AudioStream" uid="uid://bndrxqkpfsncu" path="res://assets/sound/ui click.wav" id="3_q577e"]
+
+[node name="StartingMenu" type="CanvasLayer"]
+script = ExtResource("1_6sw3n")
+
+[node name="start_game" type="Button" parent="."]
+offset_left = 434.0
+offset_top = 531.0
+offset_right = 645.0
+offset_bottom = 602.0
+text = "start game"
+script = ExtResource("2_epabg")
+click_sound = ExtResource("3_q577e")
+metadata/_custom_type_script = "uid://b0ss7tn7120vn"
+
+[node name="Button2" type="Button" parent="."]
+offset_left = 925.0
+offset_top = 124.0
+offset_right = 1136.0
+offset_bottom = 195.0
+text = "buy stuff"
+script = ExtResource("2_epabg")
+click_sound = ExtResource("3_q577e")
+metadata/_custom_type_script = "uid://b0ss7tn7120vn"
+
+[node name="Button3" type="Button" parent="."]
+offset_left = 925.0
+offset_top = 195.0
+offset_right = 1136.0
+offset_bottom = 266.0
+text = "buy stuff"
+script = ExtResource("2_epabg")
+click_sound = ExtResource("3_q577e")
+metadata/_custom_type_script = "uid://b0ss7tn7120vn"
+
+[connection signal="pressed" from="start_game" to="." method="_on_start_game_pressed"]

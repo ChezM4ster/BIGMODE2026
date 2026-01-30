@@ -1,26 +1,34 @@
-[gd_scene load_steps=5 format=3 uid="uid://dllsagbps1f2x"]
+[gd_scene load_steps=9 format=3 uid="uid://dllsagbps1f2x"]
 
 [ext_resource type="Script" uid="uid://vd1v4ber1iwv" path="res://src/Game Logic/test_cam.gd" id="1_ad8uc"]
-[ext_resource type="Texture2D" uid="uid://cpumymsqeakmo" path="res://icon.svg" id="1_xgkye"]
 [ext_resource type="PackedScene" uid="uid://dwrorxv4a4qhp" path="res://scenes/Objs/road_piece.tscn" id="2_bfhv8"]
+[ext_resource type="Script" uid="uid://hvbxycwdgrcy" path="res://scenes/levels/player.gd" id="2_joecx"]
 [ext_resource type="Script" uid="uid://lvpcckewqq46" path="res://src/Game Logic/road_maker.gd" id="3_kljt5"]
+[ext_resource type="PackedScene" uid="uid://dptv57231vx7e" path="res://assets/models/car/car model.glb" id="5_joecx"]
+[ext_resource type="PackedScene" uid="uid://jvnxibi78muh" path="res://scenes/menus/PlayerUI.tscn" id="5_nd4bu"]
+[ext_resource type="PackedScene" uid="uid://rn5ngkr55sir" path="res://scenes/menus/StartingMenu.tscn" id="7_06sp8"]
+[ext_resource type="PackedScene" uid="uid://crwmxpm03x8p5" path="res://scenes/menus/PlayerGameMenu.tscn" id="8_ej02d"]
 
 [node name="TestScene" type="Node3D"]
 
-[node name="MainCam" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 14.026315, 0)
+[node name="PlayerUi" parent="." instance=ExtResource("5_nd4bu")]
+
+[node name="player" type="Node3D" parent="."]
+script = ExtResource("2_joecx")
+
+[node name="car model" parent="player" instance=ExtResource("5_joecx")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 1.5232558, -7.38295)
+
+[node name="MainCam" type="Camera3D" parent="player"]
+transform = Transform3D(1, 0, 0, 0, 0.94308347, 0.33255622, 0, -0.33255622, 0.94308347, 0, 4.3076296, -4.4702435)
+fov = 92.6
+near = 1.207
 script = ExtResource("1_ad8uc")
 
-[node name="Icon" type="Sprite2D" parent="."]
-visible = false
-position = Vector2(583, 287)
-scale = Vector2(0.8125, 0.8125)
-texture = ExtResource("1_xgkye")
-
-[node name="Label" type="Label" parent="."]
-visible = false
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="RoadMaker" type="Node3D" parent="." node_paths=PackedStringArray("roadPieces", "cam")]
+script = ExtResource("3_kljt5")
+roadPieces = [NodePath("../RoadPiece1"), NodePath("../RoadPiece2"), NodePath("../RoadPiece3"), NodePath("../RoadPiece4"), NodePath("../RoadPiece5")]
+cam = NodePath("../player/MainCam")
 
 [node name="RoadPiece1" parent="." instance=ExtResource("2_bfhv8")]
 
@@ -36,7 +44,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -749)
 [node name="RoadPiece5" parent="." instance=ExtResource("2_bfhv8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -999)
 
-[node name="RoadMaker" type="Node3D" parent="." node_paths=PackedStringArray("roadPieces", "cam")]
-script = ExtResource("3_kljt5")
-roadPieces = [NodePath("../RoadPiece1"), NodePath("../RoadPiece2"), NodePath("../RoadPiece3"), NodePath("../RoadPiece4"), NodePath("../RoadPiece5")]
-cam = NodePath("../MainCam")
+[node name="StartingMenu" parent="." instance=ExtResource("7_06sp8")]
+
+[node name="PlayerGameMenu" parent="." instance=ExtResource("8_ej02d")]

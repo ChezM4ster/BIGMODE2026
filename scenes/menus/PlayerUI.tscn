@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://jvnxibi78muh"]
+
+[ext_resource type="Script" uid="uid://cvg4blds34ajb" path="res://scenes/menus/player_ui.gd" id="1_ayqdu"]
+
+[node name="PlayerUi" type="CanvasLayer"]
+script = ExtResource("1_ayqdu")
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 458.0
+offset_top = 7.0
+offset_right = 760.0
+offset_bottom = 59.0
+text = "1000000000000000"
