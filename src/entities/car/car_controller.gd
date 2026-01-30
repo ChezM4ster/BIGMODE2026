@@ -10,7 +10,7 @@ enum {
 
 var sphere_offset : Vector3 = Vector3.DOWN
 
-@export var acceleration : float = 35.0
+@export var acceleration : float = 40.0
 
 @export var steering : float = 10.0
 
@@ -28,6 +28,12 @@ var sphere_offset : Vector3 = Vector3.DOWN
 
 @onready var ball: RigidBody3D = $Ball
 
+var drift : bool = false
+var drift_direction : float = 0
+var minimum_drift : bool = false
+var boost : float = 1.0
+var drift_boost : float = 1.75
+
 
 var speed_input : float = 0.0
 var rotate_input : float = 0.0 
@@ -36,29 +42,18 @@ var car_state : int = DRIVE
 
 func _physics_process(delta: float) -> void:
 	car_mesh.transform.origin = ball.transform.origin
-	ball.apply_central_force(-car_mesh.global_transform.basis.z * speed_input)
+	ball.apply_central_force(-car_mesh.global_transform.basis.z * speed_input * boost)
 
 func _process(delta):
 	
-	speed_input = Input.get_axis("accelerate", "brake") * acceleration
-	rotate_input = Input.get_axis("steer_right", "steer_left") * deg_to_rad(steering)
-	
+	player_input()
+	state_updater(delta)
 	camera_fov(delta)
 	camera_tilt(delta)
 	
+	
 	if ball.linear_velocity.length() > 0.75:
 		rotate_car(delta)
-	
-	
-	#state_updater()
-	#match car_state:
-		#DRIVE:
-			#drive_state(delta)
-		#DRIFT:
-			#pass
-		#AIR:
-			#pass
-	
 
 func rotate_car(delta : float) -> void:
 	var new_basis : Basis = car_mesh.global_transform.basis.rotated(car_mesh.global_transform.basis.y, rotate_input)
@@ -67,8 +62,40 @@ func rotate_car(delta : float) -> void:
 	var t : float = -rotate_input * ball.linear_velocity.length() / body_tilt
 	car_body.rotation.z = lerp(car_body.rotation.z, t, 10 * delta)
 
+func player_input() -> void:
+	speed_input = Input.get_axis("accelerate", "brake") * acceleration
+	rotate_input = Input.get_axis("steer_right", "steer_left") * deg_to_rad(steering)
 
+#region Player state methods
+func state_updater(delta : float) -> void:
+	match car_state:
+		DRIVE:
+			drive_state(delta)
+		DRIFT:
+			drift_state(delta)
+		AIR:
+			pass
 
+func drive_state(delta : float) -> void:
+	## Will be used to check for air state
+	if !ground_ray.is_colliding():
+		pass
+		
+	if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0:
+		start_drift()
+	
+func drift_state(delta : float) -> void:
+	
+	var steer = Input.get_axis("steer_right", "steer_left")
+	var drift_bias : float = drift_direction * 2
+	rotate_input = (steer * deg_to_rad(steering)) * 0.4 + drift_bias
+		
+	if Input.is_action_just_released("drift") or speed_input > 1:
+		stop_drift()
+
+func air_state(delta : float) -> void:
+	print("Air state")
+#endregion
 
 #region Camera Tilting and FOV methods
 
@@ -76,23 +103,40 @@ func rotate_car(delta : float) -> void:
 @export var max_camera_tilt : float = 15.0    
 @export var camera_tilt_speed : float = 6.0 
 var current_tilt : float = 0.0
+var current_offset : float = 0.0
 
 @export var base_fov : float = 70.0
 @export var max_fov : float = 95.0
 @export var fov_speed : float = 6.0      
 @export var fov_max_speed : float = 45.0 
 
+@export_category("Drift Camera Juice")
+@export var drift_camera_tilt : float = 80.0       
+@export var drift_tilt_speed : float = 12.0         
+@export var drift_camera_offset : float = 3.0      
+@export var drift_offset_speed : float = 10.0
+
 @onready var camera_rig: Node3D = $CarModel/CameraRig
 @onready var camera: Camera3D = $CarModel/CameraRig/Camera3D
 
 func camera_tilt(delta : float) -> void:
 	# Rotates da camera...
-	var speed_factor = clamp(ball.linear_velocity.length() / 40.0, 0.0, 1.0)
-	var target_tilt = rotate_input * max_camera_tilt * speed_factor
-	current_tilt = lerp(current_tilt, target_tilt, camera_tilt_speed * delta)
-	
+	var target_tilt : float = 0.0
+	var target_offset : float = 0.0
+	var tilt_speed : float = camera_tilt_speed
+
+	if car_state == DRIFT:
+		target_tilt = drift_direction * drift_camera_tilt
+		target_offset = drift_direction * drift_camera_offset
+		tilt_speed = drift_tilt_speed
+	else:
+		target_tilt = rotate_input * max_camera_tilt
+
+	current_tilt = lerp(current_tilt, target_tilt, tilt_speed * delta)
+	current_offset = lerp(current_offset, target_offset, drift_offset_speed * delta)
 
 	camera_rig.rotation.z = deg_to_rad(current_tilt)
+	camera_rig.position.x = current_offset
 
 func camera_fov(delta : float) -> void:
 	var speed = ball.linear_velocity.length()
@@ -101,4 +145,38 @@ func camera_fov(delta : float) -> void:
 
 	var target_fov = lerp(base_fov, max_fov, speed_ratio)
 	camera.fov = lerp(camera.fov, target_fov, fov_speed * delta)
+#endregion
+
+#region Drift methods
+func start_drift() -> void:
+	car_state = DRIFT
+	print("Starting drift")
+	minimum_drift = false
+	drift_direction = rotate_input
+	drift_timer.start()
+	
+func stop_drift() -> void:
+	if minimum_drift:
+		boost = drift_boost
+		boost_timer.start()
+		camera_rig.camera_shake()
+		print("Boost timer started")
+	car_state = DRIVE
+	minimum_drift = false
+	print("Stopping drift")
+	
+#endregion
+
+#region Timer related methods
+@onready var drift_timer: Timer = $Timers/DriftTimer
+@onready var boost_timer: Timer = $Timers/BoostTimer
+
+func _on_drift_timer_timeout() -> void:
+	if car_state == DRIFT:
+		minimum_drift = true
+
+func _on_boost_timer_timeout() -> void:
+	boost = 1.0
+	print("Double boost...")
+	
 #endregion
