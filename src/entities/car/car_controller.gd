@@ -20,6 +20,10 @@ var sphere_offset : Vector3 = Vector3.DOWN
 
 @export var body_tilt : float = 35.0
 
+@export var max_camera_tilt : float = 15.0    
+
+@export var camera_tilt_speed : float = 6.0 
+
 @onready var car_mesh : Node3D = $CarModel
 
 @onready var car_body: MeshInstance3D = $CarModel/Cube_001
@@ -28,10 +32,13 @@ var sphere_offset : Vector3 = Vector3.DOWN
 
 @onready var ball: RigidBody3D = $Ball
 
+@onready var camera_rig: Node3D = $CarModel/CameraRig
 
 
 var speed_input : float = 0.0
 var rotate_input : float = 0.0
+
+var current_tilt : float = 0.0    
 
 var car_state : int = DRIVE
 
@@ -43,6 +50,12 @@ func _process(delta):
 	
 	speed_input = Input.get_axis("accelerate", "brake") * acceleration
 	rotate_input = Input.get_axis("steer_right", "steer_left") * deg_to_rad(steering)
+	
+	# Rotates da camera...
+	var target_tilt = rotate_input * max_camera_tilt
+	current_tilt = lerp(current_tilt, target_tilt, camera_tilt_speed * delta)
+
+	camera_rig.rotation.z = deg_to_rad(current_tilt)
 	
 	
 	if ball.linear_velocity.length() > 0.75:

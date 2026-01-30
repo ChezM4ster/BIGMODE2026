@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dbq33beb413ax"]
+[gd_scene load_steps=6 format=3 uid="uid://dbq33beb413ax"]
 
 [ext_resource type="PackedScene" uid="uid://d2tgftykfff67" path="res://scenes/entities/car/car_controller.tscn" id="1_7304e"]
 
@@ -13,6 +13,9 @@ sky_material = SubResource("ProceduralSkyMaterial_7304e")
 background_mode = 2
 sky = SubResource("Sky_dnrx4")
 glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7304e"]
+albedo_color = Color(0.41568628, 1, 1, 1)
 
 [node name="TestingCarPhysics" type="Node3D"]
 
@@ -31,6 +34,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3546852, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_etk4d")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.2456665, 0.7191253, -22.606144)
+material_override = SubResource("StandardMaterial3D_7304e")
+use_collision = true
+size = Vector3(17.491333, 1.8494873, 3.2592773)
 
 [editable path="CarController"]
 [editable path="CarController/CarModel"]
