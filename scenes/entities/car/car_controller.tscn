@@ -5,9 +5,10 @@
 [ext_resource type="Script" uid="uid://de0mvwbhvfnmy" path="res://scenes/entities/car/camera_rig.gd" id="3_83ose"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p8s8u"]
+bounce = 0.44
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_p8s8u"]
-radius = 0.11921124
+radius = 0.2047872
 
 [node name="CarController" type="Node3D"]
 script = ExtResource("1_p8s8u")
