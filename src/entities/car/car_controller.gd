@@ -1,66 +1,101 @@
 class_name PlayerCar
-
-extends Node3D
+extends Node
+signal Explode
 
 enum {
 	DRIVE,
 	DRIFT,
-	AIR
+	AIR,
+	LOCK
 }
+
+@onready var car_mesh : Node3D = $CarModel
+@onready var car_body: MeshInstance3D = $CarModel/Cube_001
+@onready var ground_ray: RayCast3D = $Ball/GroundRay
+@onready var ball: RigidBody3D = $Ball
 
 var sphere_offset : Vector3 = Vector3.DOWN
 
-@export var acceleration : float = 50.0
-
-@export var steering : float = 10.0
-
-@export var turn_speed : float = 4.0
-
+@export var acceleration : float = 80.0
+@export var steering : float = 20.0
+@export var turn_speed : float = 6.0
 @export var turn_stop_limit : float = 0.75
-
 @export var body_tilt : float = 35.0
 
-@onready var car_mesh : Node3D = $CarModel
 
-@onready var car_body: MeshInstance3D = $CarModel/Cube_001
-
-@onready var ground_ray: RayCast3D = $GroundRay
-
-@onready var ball: RigidBody3D = $Ball
-
+@export_category("Gravity")
+@export var normal_gravity : float = 5.0 
+@export var air_gravity : float = 10.0
 var drift : bool = false
 var drift_direction : float = 0
 var minimum_drift : bool = false
 var boost : float = 1.0
 var drift_boost : float = 1.75
-
-
 var speed_input : float = 0.0
 var rotate_input : float = 0.0 
 
-var car_state : int = DRIVE
+var locked = false
 
+func kill_player():
+	car_mesh.visible = false
+	locked = true
+
+
+func revive_player():
+	car_mesh.visible = true
+	locked = false
+	ball.position = Vector3.ZERO
+	
 func _physics_process(delta: float) -> void:
 	car_mesh.transform.origin = ball.transform.origin
-	ball.apply_central_force(-car_mesh.global_transform.basis.z * speed_input * boost)
+	if get_player_state() != AIR:
+		ball.apply_central_force(-car_mesh.global_transform.basis.z * speed_input * boost)
+	apply_gravity_logic()
+
+func apply_gravity_logic() -> void:
+	if get_player_state() == AIR:
+		ball.gravity_scale = air_gravity
+	else:
+		ball.gravity_scale = normal_gravity
 
 func _process(delta):
-	
 	player_input()
 	state_updater(delta)
-	camera_fov(delta)
-	camera_tilt(delta)
-	
-	
+	align_mesh(delta)
 	if ball.linear_velocity.length() > 0.75:
-		rotate_car(delta)
+		handle_car_orientation(delta)
+
+func get_player_state() -> int :
+	if locked:
+		return LOCK
+	
+	if ground_ray.is_colliding():
+		if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0 and speed_input < 1:
+			return DRIFT
+		else:
+			return DRIVE
+	else:
+		return AIR
+
+func handle_car_orientation(delta: float) -> void:
+	car_mesh.rotate_object_local(Vector3.UP, rotate_input * turn_speed * delta)
+	var lean_target : float = -rotate_input * ball.linear_velocity.length() / body_tilt
+	car_body.rotation.z = lerp(car_body.rotation.z, lean_target, 10 * delta)
+
+func align_mesh(delta: float) -> void:
+	if ground_ray.is_colliding():
+		var normal = ground_ray.get_collision_normal()
+		var mesh_tran = car_mesh.global_transform.basis
+		var new_x = normal.cross(mesh_tran.z).normalized()
+		var new_z = new_x.cross(normal).normalized()
+		var target_basis = Basis(new_x, normal, new_z)
+		car_mesh.global_basis = car_mesh.global_basis.slerp(target_basis, delta * 10.0).orthonormalized()
 
 func rotate_car(delta : float) -> void:
-	var new_basis : Basis = car_mesh.global_transform.basis.rotated(car_mesh.global_transform.basis.y, rotate_input)
-	car_mesh.global_transform.basis = car_mesh.global_transform.basis.slerp(new_basis, turn_speed * delta)
-	car_mesh.global_transform = car_mesh.global_transform.orthonormalized()
-	var t : float = -rotate_input * ball.linear_velocity.length() / body_tilt
-	car_body.rotation.z = lerp(car_body.rotation.z, t, 10 * delta)
+	var mesh_tran = car_mesh.global_transform
+	var new_basis : Basis = mesh_tran.basis.rotated(mesh_tran.basis.y, rotate_input)
+	mesh_tran.basis = mesh_tran.basis.slerp(new_basis, turn_speed * delta)
+	mesh_tran = mesh_tran.orthonormalized()
 
 func player_input() -> void:
 	speed_input = Input.get_axis("accelerate", "brake") * acceleration
@@ -68,7 +103,7 @@ func player_input() -> void:
 
 #region Player state methods
 func state_updater(delta : float) -> void:
-	match car_state:
+	match get_player_state():
 		DRIVE:
 			drive_state(delta)
 		DRIFT:
@@ -77,79 +112,20 @@ func state_updater(delta : float) -> void:
 			pass
 
 func drive_state(delta : float) -> void:
-	## Will be used to check for air state
-	if !ground_ray.is_colliding():
-		pass
-		
 	if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0:
 		start_drift()
 	
 func drift_state(delta : float) -> void:
-	
 	var steer = Input.get_axis("steer_right", "steer_left")
 	var drift_bias : float = drift_direction * 2
 	rotate_input = (steer * deg_to_rad(steering)) * 0.4 + drift_bias
-		
 	if Input.is_action_just_released("drift") or speed_input > 1:
 		stop_drift()
 
-func air_state(delta : float) -> void:
-	print("Air state")
-#endregion
-
-#region Camera Tilting and FOV methods
-
-@export_category("Camera Juice")
-@export var max_camera_tilt : float = 15.0    
-@export var camera_tilt_speed : float = 6.0 
-var current_tilt : float = 0.0
-var current_offset : float = 0.0
-
-@export var base_fov : float = 70.0
-@export var max_fov : float = 95.0
-@export var fov_speed : float = 6.0      
-@export var fov_max_speed : float = 45.0 
-
-@export_category("Drift Camera Juice")
-@export var drift_camera_tilt : float = 80.0       
-@export var drift_tilt_speed : float = 12.0         
-@export var drift_camera_offset : float = 3.0      
-@export var drift_offset_speed : float = 10.0
-
-@onready var camera_rig: Node3D = $CarModel/CameraRig
-@onready var camera: Camera3D = $CarModel/CameraRig/Camera3D
-
-func camera_tilt(delta : float) -> void:
-	# Rotates da camera...
-	var target_tilt : float = 0.0
-	var target_offset : float = 0.0
-	var tilt_speed : float = camera_tilt_speed
-
-	if car_state == DRIFT:
-		target_tilt = drift_direction * drift_camera_tilt
-		target_offset = drift_direction * drift_camera_offset
-		tilt_speed = drift_tilt_speed
-	else:
-		target_tilt = rotate_input * max_camera_tilt
-
-	current_tilt = lerp(current_tilt, target_tilt, tilt_speed * delta)
-	current_offset = lerp(current_offset, target_offset, drift_offset_speed * delta)
-
-	camera_rig.rotation.z = deg_to_rad(current_tilt)
-	camera_rig.position.x = current_offset
-
-func camera_fov(delta : float) -> void:
-	var speed = ball.linear_velocity.length()
-	var speed_ratio = clamp(speed / fov_max_speed, 0.0, 1.0)
-	speed_ratio = ease(speed_ratio, -1.5)
-
-	var target_fov = lerp(base_fov, max_fov, speed_ratio)
-	camera.fov = lerp(camera.fov, target_fov, fov_speed * delta)
 #endregion
 
 #region Drift methods
 func start_drift() -> void:
-	car_state = DRIFT
 	print("Starting drift")
 	minimum_drift = false
 	drift_direction = rotate_input
@@ -159,9 +135,8 @@ func stop_drift() -> void:
 	if minimum_drift:
 		boost = drift_boost
 		boost_timer.start()
-		camera_rig.camera_shake()
+		#camera_rig.camera_shake()
 		print("Boost timer started")
-	car_state = DRIVE
 	minimum_drift = false
 	print("Stopping drift")
 	
@@ -172,7 +147,7 @@ func stop_drift() -> void:
 @onready var boost_timer: Timer = $Timers/BoostTimer
 
 func _on_drift_timer_timeout() -> void:
-	if car_state == DRIFT:
+	if get_player_state() == DRIFT:
 		minimum_drift = true
 
 func _on_boost_timer_timeout() -> void:
@@ -180,3 +155,12 @@ func _on_boost_timer_timeout() -> void:
 	print("Double boost...")
 	
 #endregion
+
+func explode_car():
+	Explode.emit()
+
+func _on_collison_detetor_body_entered(body: Node3D) -> void:
+	var crash_threshold = 15
+	if ball.linear_velocity.length() > crash_threshold:
+		explode_car()
+	
