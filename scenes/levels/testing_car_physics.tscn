@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dbq33beb413ax"]
+[gd_scene load_steps=8 format=3 uid="uid://dbq33beb413ax"]
 
 [ext_resource type="PackedScene" uid="uid://d2tgftykfff67" path="res://scenes/entities/car/car_controller.tscn" id="1_7304e"]
 [ext_resource type="PackedScene" uid="uid://xgsjck238po3" path="res://assets/models/obstacles/concrete_blockade/concrete_blockade.tscn" id="2_dnrx4"]
+[ext_resource type="PackedScene" uid="uid://drlk0cebtjr1v" path="res://scenes/Objs/oil_spill.tscn" id="3_etk4d"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7304e"]
 sky_top_color = Color(0.75565666, 0.8840033, 0.90147763, 1)
@@ -47,6 +48,9 @@ size = Vector3(17.491333, 1.8494873, 3.2592773)
 
 [node name="concrete_blockade" parent="." instance=ExtResource("2_dnrx4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.053233, -0.11052096, -3.6085682)
+
+[node name="OilSpill" parent="." instance=ExtResource("3_etk4d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.748331, -0.08574303, -19.328808)
 
 [editable path="CarController"]
 [editable path="CarController/CarModel"]

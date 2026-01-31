@@ -10,7 +10,7 @@ enum {
 
 var sphere_offset : Vector3 = Vector3.DOWN
 
-@export var acceleration : float = 50.0
+@export var acceleration : float = 70.0
 
 @export var steering : float = 10.0
 
@@ -42,6 +42,7 @@ var car_state : int = DRIVE
 
 func _physics_process(delta: float) -> void:
 	car_mesh.transform.origin = ball.transform.origin
+	ground_ray.transform.origin = ball.transform.origin
 	ball.apply_central_force(-car_mesh.global_transform.basis.z * speed_input * boost)
 
 func _process(delta):
@@ -50,7 +51,6 @@ func _process(delta):
 	state_updater(delta)
 	camera_fov(delta)
 	camera_tilt(delta)
-	
 	
 	if ball.linear_velocity.length() > 0.75:
 		rotate_car(delta)
@@ -68,19 +68,25 @@ func player_input() -> void:
 
 #region Player state methods
 func state_updater(delta : float) -> void:
+	print(car_state)
+	
 	match car_state:
 		DRIVE:
 			drive_state(delta)
 		DRIFT:
 			drift_state(delta)
 		AIR:
-			pass
+			air_state(delta)
 
 func drive_state(delta : float) -> void:
+	
 	## Will be used to check for air state
 	if !ground_ray.is_colliding():
-		pass
-		
+		car_state = AIR
+	
+	if Input.is_action_just_pressed("ui_accept") and oily:
+		jump()
+	
 	if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0:
 		start_drift()
 	
@@ -95,6 +101,9 @@ func drift_state(delta : float) -> void:
 
 func air_state(delta : float) -> void:
 	print("Air state")
+	
+	if ground_ray.is_colliding():
+		car_state = DRIVE
 #endregion
 
 #region Camera Tilting and FOV methods
@@ -167,9 +176,28 @@ func stop_drift() -> void:
 	
 #endregion
 
+#region Oil related methods
+var oily : bool = false
+
+func enter_oil() -> void:
+	oily = true
+	print("Entered oil")
+
+func exit_oil() -> void:
+	oil_timer.start()
+
+@export var jump_force : float = 800.0
+
+func jump() -> void:
+	ball.apply_central_force(Vector3.UP * jump_force)
+	print("Jumping")
+
+#endregion
+
 #region Timer related methods
 @onready var drift_timer: Timer = $Timers/DriftTimer
 @onready var boost_timer: Timer = $Timers/BoostTimer
+@onready var oil_timer: Timer = $Timers/OilTimer
 
 func _on_drift_timer_timeout() -> void:
 	if car_state == DRIFT:
@@ -179,4 +207,8 @@ func _on_boost_timer_timeout() -> void:
 	boost = 1.0
 	print("Double boost...")
 	
+func _on_oil_timer_timeout() -> void:
+	oily = false
+	print("Oil over")
+
 #endregion
