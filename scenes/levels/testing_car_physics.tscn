@@ -34,7 +34,26 @@ light_energy = 0.725
 shadow_enabled = true
 
 [node name="CarController" parent="." instance=ExtResource("1_7304e")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3546852, 0)
+acceleration = null
+steering = null
+turn_speed = null
+turn_stop_limit = null
+body_tilt = null
+normal_gravity = null
+air_gravity = null
+max_camera_tilt = null
+base_fov = null
+max_fov = null
+fov_speed = null
+fov_max_speed = null
+drift_camera_tilt = null
+drift_tilt_speed = null
+drift_camera_offset = null
+drift_offset_speed = null
+
+[node name="CameraRig" parent="CarController" index="0"]
+period = null
+magnitude = null
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_etk4d")

@@ -12,13 +12,20 @@ bounce = 0.26
 
 [node name="CarController" type="Node"]
 script = ExtResource("1_p8s8u")
-body_tilt = 40.0
+
+[node name="CameraRig" type="Node3D" parent="."]
+script = ExtResource("3_83ose")
+
+[node name="Camera3D" type="Camera3D" parent="CameraRig"]
+transform = Transform3D(1, 0, 0, 0, 0.9514924, 0.30767214, 0, -0.30767214, 0.9514924, 0, 2.3139334, 3.5844767)
+current = true
 
 [node name="CarModel" parent="." instance=ExtResource("1_7ri6m")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
-[node name="Cube_001" parent="CarModel" index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08879, 0)
+[node name="GroundRay" type="RayCast3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.058990538, 0)
+target_position = Vector3(0, -2.32, 0)
 
 [node name="Ball" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0914588, 0)
@@ -26,22 +33,9 @@ physics_material_override = SubResource("PhysicsMaterial_p8s8u")
 linear_damp = 2.0
 angular_damp = 5.0
 
-[node name="GroundRay" type="RayCast3D" parent="Ball"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.03246826, 0)
-target_position = Vector3(0, -2.32, 0)
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ball"]
 transform = Transform3D(1, 0, 0, 0, -0.005951518, 0.9999823, 0, -0.9999823, -0.005951518, -0.16447127, 0.35938707, -0.02294086)
 shape = SubResource("SphereShape3D_83ose")
-
-[node name="CameraRig" type="SpringArm3D" parent="Ball"]
-transform = Transform3D(1, 0, 0, 0, 0.95105654, 0.309017, 0, -0.309017, 0.95105654, 0, 0, 0)
-spring_length = 7.0
-script = ExtResource("3_83ose")
-max_camera_tilt = 20.0
-
-[node name="Camera3D" type="Camera3D" parent="Ball/CameraRig"]
-current = true
 
 [node name="Timers" type="Node" parent="."]
 

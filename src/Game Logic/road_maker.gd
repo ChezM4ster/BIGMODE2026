@@ -1,6 +1,6 @@
 extends Node3D
 @export var roadPieces: Array[Node3D]
-@export var cam: Camera3D
+@export var cam: Node3D
 @export var segment_length: float = 260.0
 @export var buffer: float = 50.0
 @export var travel_axis: Vector3 = Vector3.FORWARD # +Z
