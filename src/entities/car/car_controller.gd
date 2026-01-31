@@ -1,10 +1,12 @@
 class_name PlayerCar
 extends Node
+signal Explode
 
 enum {
 	DRIVE,
 	DRIFT,
-	AIR
+	AIR,
+	LOCK
 }
 
 @onready var car_mesh : Node3D = $CarModel
@@ -32,6 +34,18 @@ var drift_boost : float = 1.75
 var speed_input : float = 0.0
 var rotate_input : float = 0.0 
 
+var locked = false
+
+func kill_player():
+	car_mesh.visible = false
+	locked = true
+
+
+func revive_player():
+	car_mesh.visible = true
+	locked = false
+	ball.position = Vector3.ZERO
+	
 func _physics_process(delta: float) -> void:
 	car_mesh.transform.origin = ball.transform.origin
 	if get_player_state() != AIR:
@@ -52,6 +66,9 @@ func _process(delta):
 		handle_car_orientation(delta)
 
 func get_player_state() -> int :
+	if locked:
+		return LOCK
+	
 	if ground_ray.is_colliding():
 		if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0 and speed_input < 1:
 			return DRIFT
@@ -72,7 +89,7 @@ func align_mesh(delta: float) -> void:
 		var new_x = normal.cross(mesh_tran.z).normalized()
 		var new_z = new_x.cross(normal).normalized()
 		var target_basis = Basis(new_x, normal, new_z)
-		car_mesh.global_basis = car_mesh.global_basis.slerp(target_basis, delta * 15.0).orthonormalized()
+		car_mesh.global_basis = car_mesh.global_basis.slerp(target_basis, delta * 10.0).orthonormalized()
 
 func rotate_car(delta : float) -> void:
 	var mesh_tran = car_mesh.global_transform
@@ -138,3 +155,12 @@ func _on_boost_timer_timeout() -> void:
 	print("Double boost...")
 	
 #endregion
+
+func explode_car():
+	Explode.emit()
+
+func _on_collison_detetor_body_entered(body: Node3D) -> void:
+	var crash_threshold = 15
+	if ball.linear_velocity.length() > crash_threshold:
+		explode_car()
+	

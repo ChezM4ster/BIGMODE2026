@@ -1,7 +1,7 @@
 extends Node
 
 @onready var road_base_preload = preload("res://assets/models/obstacles/road_piece2.tscn")
-
+@onready var road_base_with_wall_preload = preload("res://assets/models/obstacles/road_piece_with_wall.tscn")
 
 @export var player : Node
 
@@ -31,11 +31,10 @@ func _process(_delta: float) -> void:
 	update_grid()
 
 func spawn_tile(pos : Vector3):
-	var new_tile = road_base_preload.instantiate()
+	var new_tile = [road_base_preload ,road_base_with_wall_preload].pick_random().instantiate()
 	add_child(new_tile)
 	new_tile.global_position = pos
 	active_pieces.append(new_tile)
-
 
 func filter_unspawned(arr :Array[Vector3]) -> Array[Vector3]:
 	return arr.filter(func(pos : Vector3): return active_pieces.find_custom(func(obj : Node3D): return obj.global_position == pos) == -1)
