@@ -34,7 +34,6 @@ func spawn_tile(pos : Vector3):
 	var new_tile = road_base_preload.instantiate()
 	add_child(new_tile)
 	new_tile.global_position = pos
-	print("spawned")
 	active_pieces.append(new_tile)
 
 

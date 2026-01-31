@@ -27,13 +27,10 @@ var current_offset : float = 0.0
 @export var drift_camera_offset : float = 3.0      
 @export var drift_offset_speed : float = 10.0
 
-
 func _process(delta: float) -> void:
-	
 	camera_align(delta)
 	camera_fov(delta)
 	camera_tilt(delta)
-
 
 func camera_align(delta):
 	if ground_ray.is_colliding():
@@ -48,17 +45,14 @@ func camera_tilt(delta : float) -> void:
 	var target_tilt : float = 0.0
 	var target_offset : float = 0.0
 	var tilt_speed : float = camera_tilt_speed
-
-	if car.car_state == car.DRIFT:
+	if car.get_player_state() == car.DRIFT:
 		target_tilt = car.drift_direction * drift_camera_tilt
 		target_offset = car.drift_direction * drift_camera_offset
 		tilt_speed = drift_tilt_speed
 	else:
 		target_tilt = car.rotate_input * max_camera_tilt
-
 	current_tilt = lerp(current_tilt, target_tilt, tilt_speed * delta)
 	current_offset = lerp(current_offset, target_offset, drift_offset_speed * delta)
-
 	#rotation.z = deg_to_rad(current_tilt)
 	position.x = current_offset
 
