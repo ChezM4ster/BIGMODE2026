@@ -10,7 +10,7 @@ enum {
 
 var sphere_offset : Vector3 = Vector3.DOWN
 
-@export var acceleration : float = 40.0
+@export var acceleration : float = 50.0
 
 @export var steering : float = 10.0
 

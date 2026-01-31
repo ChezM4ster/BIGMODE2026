@@ -13,6 +13,9 @@ sky_material = SubResource("ProceduralSkyMaterial_7304e")
 background_mode = 2
 sky = SubResource("Sky_dnrx4")
 glow_enabled = true
+glow_strength = 0.85
+glow_bloom = 0.18
+glow_hdr_threshold = 1.09
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7304e"]
 albedo_color = Color(0.41568628, 1, 1, 1)
@@ -26,7 +29,7 @@ size = Vector3(58.815495, 0.38183594, 70.86203)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.98255455, -0.14466466, -0.11687068, 0.18095838, 0.8886596, 0.42135292, 0.042903382, -0.43515092, 0.8993348, 0, 3.8933995, 0)
-light_energy = 1.425
+light_energy = 0.725
 shadow_enabled = true
 
 [node name="CarController" parent="." instance=ExtResource("1_7304e")]
