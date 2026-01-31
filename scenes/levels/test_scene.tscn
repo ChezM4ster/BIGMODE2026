@@ -1,17 +1,43 @@
-[gd_scene load_steps=9 format=3 uid="uid://dllsagbps1f2x"]
+[gd_scene load_steps=16 format=3 uid="uid://dllsagbps1f2x"]
 
 [ext_resource type="Script" uid="uid://vd1v4ber1iwv" path="res://src/Game Logic/test_cam.gd" id="1_ad8uc"]
 [ext_resource type="PackedScene" uid="uid://dwrorxv4a4qhp" path="res://scenes/Objs/road_piece.tscn" id="2_bfhv8"]
-[ext_resource type="Script" uid="uid://hvbxycwdgrcy" path="res://scenes/levels/player.gd" id="2_joecx"]
-[ext_resource type="Script" uid="uid://lvpcckewqq46" path="res://src/Game Logic/road_maker.gd" id="3_kljt5"]
+[ext_resource type="Script" uid="uid://hvbxycwdgrcy" path="res://src/Game Logic/player.gd" id="2_joecx"]
+[ext_resource type="Script" uid="uid://lvpcckewqq46" path="res://src/Game Logic/level_maker.gd" id="3_kljt5"]
+[ext_resource type="PackedScene" uid="uid://do6xbuatfbkhr" path="res://scenes/entities/obstacles/slow_obstacle.tscn" id="3_sghpj"]
+[ext_resource type="PackedScene" uid="uid://cg1tpvcvf2wc4" path="res://scenes/entities/obstacles/oil_obstacle.tscn" id="4_wxhui"]
+[ext_resource type="PackedScene" uid="uid://gc8icmqwp0rc" path="res://scenes/entities/obstacles/TNT_obstacle.tscn" id="5_7jghb"]
 [ext_resource type="PackedScene" uid="uid://dptv57231vx7e" path="res://assets/models/car/car model.glb" id="5_joecx"]
-[ext_resource type="PackedScene" uid="uid://jvnxibi78muh" path="res://scenes/menus/PlayerUI.tscn" id="5_nd4bu"]
-[ext_resource type="PackedScene" uid="uid://rn5ngkr55sir" path="res://scenes/menus/StartingMenu.tscn" id="7_06sp8"]
-[ext_resource type="PackedScene" uid="uid://crwmxpm03x8p5" path="res://scenes/menus/PlayerGameMenu.tscn" id="8_ej02d"]
+[ext_resource type="PackedScene" path="res://scenes/menus/PlayerUI.tscn" id="5_nd4bu"]
+[ext_resource type="Script" uid="uid://dbpwxfank5rn4" path="res://src/Game Logic/Obstacle_manager.gd" id="6_q0k0a"]
+[ext_resource type="PackedScene" uid="uid://dod4p70loy1h6" path="res://scenes/entities/obstacles/points_obstacle.tscn" id="6_tc41t"]
+[ext_resource type="PackedScene" path="res://scenes/menus/StartingMenu.tscn" id="7_06sp8"]
+[ext_resource type="PackedScene" path="res://scenes/menus/PlayerGameMenu.tscn" id="8_ej02d"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_j3vxy"]
+radius = 200.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_wjwi7"]
+radius = 250.0
 
 [node name="TestScene" type="Node3D"]
 
 [node name="PlayerUi" parent="." instance=ExtResource("5_nd4bu")]
+
+[node name="ObstacleManager" type="Node3D" parent="." node_paths=PackedStringArray("player", "spawn_area", "despawn_area")]
+script = ExtResource("6_q0k0a")
+player = NodePath("../player")
+spawn_area = NodePath("../player/SpawnArea")
+despawn_area = NodePath("../player/DespawnArea")
+spawn_radius = 200.0
+despawn_radius = 250.0
+safe_radius = 20.0
+min_spacing = 20.0
+slowdown_scene = ExtResource("3_sghpj")
+oil_scene = ExtResource("4_wxhui")
+explosives_scene = ExtResource("5_7jghb")
+points_only_scene = ExtResource("6_tc41t")
+metadata/_custom_type_script = "uid://dbpwxfank5rn4"
 
 [node name="player" type="Node3D" parent="."]
 script = ExtResource("2_joecx")
@@ -25,23 +51,49 @@ fov = 92.6
 near = 1.207
 script = ExtResource("1_ad8uc")
 
-[node name="RoadMaker" type="Node3D" parent="." node_paths=PackedStringArray("roadPieces", "cam")]
+[node name="RoadPiece1" parent="player/MainCam" instance=ExtResource("2_bfhv8")]
+transform = Transform3D(1, 0, 0, 0, 0.9430832, -0.33255622, 0, 0.33255622, 0.9430832, 0, 294.4165, -847.8777)
+
+[node name="RoadPiece2" parent="player/MainCam" instance=ExtResource("2_bfhv8")]
+transform = Transform3D(1, 0, 0, 0, 0.9430832, -0.33255622, 0, 0.33255622, 0.9430832, 0, 377.5556, -1083.6484)
+
+[node name="RoadPiece3" parent="player/MainCam" instance=ExtResource("2_bfhv8")]
+transform = Transform3D(1, 0, 0, 0, 0.9430832, -0.33255622, 0, 0.33255622, 0.9430832, 0, 460.6946, -1319.4191)
+
+[node name="RoadPiece4" parent="player/MainCam" instance=ExtResource("2_bfhv8")]
+transform = Transform3D(1, 0, 0, 0, 0.9430832, -0.33255622, 0, 0.33255622, 0.9430832, 0, 543.5011, -1554.2468)
+
+[node name="RoadPiece5" parent="player/MainCam" instance=ExtResource("2_bfhv8")]
+transform = Transform3D(1, 0, 0, 0, 0.9430832, -0.33255622, 0, 0.33255622, 0.9430832, 0, 626.6402, -1790.018)
+
+[node name="SpawnArea" type="Area3D" parent="player"]
+
+[node name="Spawner" type="CollisionShape3D" parent="player/SpawnArea"]
+shape = SubResource("CylinderShape3D_j3vxy")
+disabled = true
+
+[node name="DespawnArea" type="Area3D" parent="player"]
+
+[node name="OutOfRangeRemover" type="CollisionShape3D" parent="player/DespawnArea"]
+shape = SubResource("CylinderShape3D_wjwi7")
+
+[node name="LevelMaker" type="Node3D" parent="." node_paths=PackedStringArray("cam", "roadPieces")]
 script = ExtResource("3_kljt5")
-roadPieces = [NodePath("../RoadPiece1"), NodePath("../RoadPiece2"), NodePath("../RoadPiece3"), NodePath("../RoadPiece4"), NodePath("../RoadPiece5")]
 cam = NodePath("../player/MainCam")
+roadPieces = [NodePath("RoadPiece1"), NodePath("RoadPiece2"), NodePath("RoadPiece3"), NodePath("RoadPiece4"), NodePath("RoadPiece5")]
 
-[node name="RoadPiece1" parent="." instance=ExtResource("2_bfhv8")]
+[node name="RoadPiece1" parent="LevelMaker" instance=ExtResource("2_bfhv8")]
 
-[node name="RoadPiece2" parent="." instance=ExtResource("2_bfhv8")]
+[node name="RoadPiece2" parent="LevelMaker" instance=ExtResource("2_bfhv8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -250)
 
-[node name="RoadPiece3" parent="." instance=ExtResource("2_bfhv8")]
+[node name="RoadPiece3" parent="LevelMaker" instance=ExtResource("2_bfhv8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -500)
 
-[node name="RoadPiece4" parent="." instance=ExtResource("2_bfhv8")]
+[node name="RoadPiece4" parent="LevelMaker" instance=ExtResource("2_bfhv8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -749)
 
-[node name="RoadPiece5" parent="." instance=ExtResource("2_bfhv8")]
+[node name="RoadPiece5" parent="LevelMaker" instance=ExtResource("2_bfhv8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -999)
 
 [node name="StartingMenu" parent="." instance=ExtResource("7_06sp8")]

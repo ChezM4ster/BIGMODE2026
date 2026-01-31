@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cg1tpvcvf2wc4"]
+
+[ext_resource type="Script" uid="uid://2qe2gphg2r3t" path="res://src/Game Logic/road_obstacle.gd" id="1_0b34o"]
+[ext_resource type="Texture2D" uid="uid://bq3oq1u4p8bgw" path="res://assets/obstacles/Oil.png" id="2_35wbx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o4do2"]
+
+[node name="road_obstacle" type="RigidBody3D" groups=["Obstacle"]]
+gravity_scale = 0.0
+script = ExtResource("1_0b34o")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_o4do2")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+pixel_size = 0.02
+texture = ExtResource("2_35wbx")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

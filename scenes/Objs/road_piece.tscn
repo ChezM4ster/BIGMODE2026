@@ -1,53 +1,43 @@
-[gd_scene load_steps=8 format=3 uid="uid://dwrorxv4a4qhp"]
+[gd_scene load_steps=7 format=3 uid="uid://dwrorxv4a4qhp"]
+
+[ext_resource type="Texture2D" uid="uid://c64gubb0wej56" path="res://assets/dirtroad/asphalt_02_diff_4k.jpg" id="1_ytyg2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xgkye"]
-albedo_color = Color(0, 0, 0, 1)
+albedo_color = Color(0.7700436, 0.5593512, 0.37667266, 1)
+albedo_texture = ExtResource("1_ytyg2")
+normal_enabled = true
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_yk0es"]
 material = SubResource("StandardMaterial3D_xgkye")
-size = Vector2(45, 260)
+size = Vector2(202.5, 260)
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_wso2v"]
-data = PackedVector3Array(22.5, 0, 130, -22.5, 0, 130, 22.5, 0, -130, -22.5, 0, 130, -22.5, 0, -130, 22.5, 0, -130)
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_s1vwf"]
+data = PackedVector3Array(101.25, 0, 130, -101.25, 0, 130, 101.25, 0, -130, -101.25, 0, 130, -101.25, 0, -130, 101.25, 0, -130)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ad8uc"]
 albedo_color = Color(0.49585795, 0.298713, 0.10319253, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ibhae"]
 material = SubResource("StandardMaterial3D_ad8uc")
-size = Vector3(5.07, 45.12, 250)
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_w3y5v"]
-data = PackedVector3Array(-2.5349998, 22.56, 125, 2.5349998, 22.56, 125, -2.5349998, -22.56, 125, 2.5349998, 22.56, 125, 2.5349998, -22.56, 125, -2.5349998, -22.56, 125, 2.5349998, 22.56, -125, -2.5349998, 22.56, -125, 2.5349998, -22.56, -125, -2.5349998, 22.56, -125, -2.5349998, -22.56, -125, 2.5349998, -22.56, -125, 2.5349998, 22.56, 125, 2.5349998, 22.56, -125, 2.5349998, -22.56, 125, 2.5349998, 22.56, -125, 2.5349998, -22.56, -125, 2.5349998, -22.56, 125, -2.5349998, 22.56, -125, -2.5349998, 22.56, 125, -2.5349998, -22.56, -125, -2.5349998, 22.56, 125, -2.5349998, -22.56, 125, -2.5349998, -22.56, -125, 2.5349998, 22.56, 125, -2.5349998, 22.56, 125, 2.5349998, 22.56, -125, -2.5349998, 22.56, 125, -2.5349998, 22.56, -125, 2.5349998, 22.56, -125, -2.5349998, -22.56, 125, 2.5349998, -22.56, 125, -2.5349998, -22.56, -125, 2.5349998, -22.56, 125, 2.5349998, -22.56, -125, -2.5349998, -22.56, -125)
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_l17q2"]
-data = PackedVector3Array(-2.5349998, 22.56, 125, 2.5349998, 22.56, 125, -2.5349998, -22.56, 125, 2.5349998, 22.56, 125, 2.5349998, -22.56, 125, -2.5349998, -22.56, 125, 2.5349998, 22.56, -125, -2.5349998, 22.56, -125, 2.5349998, -22.56, -125, -2.5349998, 22.56, -125, -2.5349998, -22.56, -125, 2.5349998, -22.56, -125, 2.5349998, 22.56, 125, 2.5349998, 22.56, -125, 2.5349998, -22.56, 125, 2.5349998, 22.56, -125, 2.5349998, -22.56, -125, 2.5349998, -22.56, 125, -2.5349998, 22.56, -125, -2.5349998, 22.56, 125, -2.5349998, -22.56, -125, -2.5349998, 22.56, 125, -2.5349998, -22.56, 125, -2.5349998, -22.56, -125, 2.5349998, 22.56, 125, -2.5349998, 22.56, 125, 2.5349998, 22.56, -125, -2.5349998, 22.56, 125, -2.5349998, 22.56, -125, 2.5349998, 22.56, -125, -2.5349998, -22.56, 125, 2.5349998, -22.56, 125, -2.5349998, -22.56, -125, 2.5349998, -22.56, 125, 2.5349998, -22.56, -125, -2.5349998, -22.56, -125)
+size = Vector3(5.07, 45.12, 275)
 
 [node name="RoadPiece" type="StaticBody3D"]
 
 [node name="Road" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -130)
+transform = Transform3D(8.9, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -130)
 mesh = SubResource("PlaneMesh_yk0es")
 skeleton = NodePath("../..")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -130)
-shape = SubResource("ConcavePolygonShape3D_wso2v")
+transform = Transform3D(8.9, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -130)
+shape = SubResource("ConcavePolygonShape3D_s1vwf")
 
 [node name="Roadwalls" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.965897, 19.210606, -126.255844)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -105.9659, -29.561718, -135.02582)
 mesh = SubResource("BoxMesh_ibhae")
 skeleton = NodePath("../..")
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.965897, 19.210606, -126.255844)
-shape = SubResource("ConcavePolygonShape3D_w3y5v")
-
 [node name="Roadwalls2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.560577, 21.421211, -120.51169)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 103.56058, -27.351112, -129.28168)
 mesh = SubResource("BoxMesh_ibhae")
 skeleton = NodePath("../Roadwalls")
-
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.560577, 21.421211, -120.51169)
-shape = SubResource("ConcavePolygonShape3D_l17q2")

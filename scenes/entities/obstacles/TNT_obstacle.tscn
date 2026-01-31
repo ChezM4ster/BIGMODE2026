@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://gc8icmqwp0rc"]
+
+[ext_resource type="Script" uid="uid://2qe2gphg2r3t" path="res://src/Game Logic/road_obstacle.gd" id="1_bvvcj"]
+[ext_resource type="Texture2D" uid="uid://b3illxsuwu75s" path="res://assets/obstacles/TNT.png" id="2_bvvcj"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o4do2"]
+
+[node name="road_obstacle" type="RigidBody3D" groups=["Obstacle"]]
+gravity_scale = 0.0
+script = ExtResource("1_bvvcj")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_o4do2")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+pixel_size = 0.02
+texture = ExtResource("2_bvvcj")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

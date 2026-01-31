@@ -2,6 +2,7 @@ extends RigidBody3D
 class_name RoadObstacle
 
 enum ObstacleType { SLOWDOWN, OIL, EXPLOSIVES, POINTS_ONLY }
+signal hit(obstacle: Node3D)
 
 @export var obstacle_type: ObstacleType = ObstacleType.POINTS_ONLY
 @export var points_value: int = 10
@@ -16,6 +17,9 @@ enum ObstacleType { SLOWDOWN, OIL, EXPLOSIVES, POINTS_ONLY }
 @export_group("Explosives")
 @export var explosives_count: int = 1
 
+func _ready() -> void:
+	$Sprite3D.billboard = 1
+
 func apply_to_car(car: Node) -> void:
 	match obstacle_type:
 		ObstacleType.SLOWDOWN:
@@ -25,7 +29,15 @@ func apply_to_car(car: Node) -> void:
 		ObstacleType.EXPLOSIVES:
 			print_debug("add boomboom")
 		ObstacleType.POINTS_ONLY:
-			pass
+			print_debug("just points")
 
 	if points_value > 0 and car.has_method("add_points"):
 		car.call("add_points", points_value, combo_tag)
+
+
+func _on_body_entered(body: Node) -> void:
+	if(true):
+		emit_signal("hit",self)
+		apply_to_car(body)
+		## something to despawn + effects
+	pass # Replace with function body.
