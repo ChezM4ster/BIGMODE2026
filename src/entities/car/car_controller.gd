@@ -216,7 +216,8 @@ func _on_oil_timer_timeout() -> void:
 func explode_car():
 	Explode.emit()
 
-func _on_collison_detetor_body_entered(_body) -> void:
-	var crash_threshold = 15
-	if ball.linear_velocity.length() > crash_threshold:
-		explode_car()
+func _on_collison_detetor_body_entered(body) -> void:
+	if !body.is_in_group("car"):
+		var crash_threshold = 15
+		if ball.linear_velocity.length() > crash_threshold:
+			explode_car()

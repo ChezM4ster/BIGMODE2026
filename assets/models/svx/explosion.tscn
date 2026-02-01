@@ -1,6 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://3c3im6olrtdh"]
+[gd_scene load_steps=10 format=3 uid="uid://3c3im6olrtdh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hdn7p"]
+transparency = 3
+alpha_hash_scale = 2.0
+alpha_antialiasing_mode = 0
+diffuse_mode = 2
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+emission_energy_multiplier = 5.65
+grow = true
+grow_amount = 1.109
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0c06u"]
 emission_shape = 1
@@ -8,9 +17,11 @@ emission_sphere_radius = 1.0
 angle_min = 1.0728835e-05
 angle_max = 386.30002
 direction = Vector3(0, 0, 0)
-spread = 180.0
-initial_velocity_min = 17.3
-initial_velocity_max = 17.3
+spread = 106.667
+initial_velocity_min = 5.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 13.91, 0)
+color = Color(0.40050542, 0.40050542, 0.40050542, 0.07058824)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xtwad"]
 transparency = 1
@@ -22,12 +33,55 @@ material = SubResource("StandardMaterial3D_xtwad")
 radius = 2.5
 height = 5.0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0c06u"]
+transparency = 1
+blend_mode = 4
+shading_mode = 2
+disable_fog = true
+disable_specular_occlusion = true
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
+albedo_color = Color(1, 1, 0.4862745, 1)
+emission_enabled = true
+emission = Color(0.7529412, 0.16470589, 0, 1)
+emission_energy_multiplier = 16.0
+grow = true
+grow_amount = 0.367
+
+[sub_resource type="Curve" id="Curve_xtwad"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.6060606, 0.68539333), 0.0, 0.0, 0, 0, Vector2(0.70454544, 1), 0.0, 0.0, 0, 0, Vector2(0.79545456, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_4ht0m"]
+curve = SubResource("Curve_xtwad")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ge8fa"]
+angle_min = -228.7
+angle_max = 262.6
+direction = Vector3(0, 0, 0)
+spread = 153.889
+initial_velocity_min = 3.0
+initial_velocity_max = 5.0
+gravity = Vector3(0, 0, 0)
+scale_min = 3.0
+scale_max = 3.0
+scale_curve = SubResource("CurveTexture_4ht0m")
+color = Color(1, 1, 0.54509807, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_heti3"]
+
 [node name="explosion" type="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, -0.023123512, 0.9997326, 0, -0.9997326, -0.023123512, 0, 0, 0)
 material_override = SubResource("StandardMaterial3D_hdn7p")
-emitting = false
-amount = 138
-lifetime = 0.95
-one_shot = true
+amount = 23
+lifetime = 0.8
 explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_0c06u")
 draw_pass_1 = SubResource("SphereMesh_4ht0m")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+material_override = SubResource("StandardMaterial3D_0c06u")
+lifetime = 0.73
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_ge8fa")
+draw_pass_1 = SubResource("SphereMesh_heti3")

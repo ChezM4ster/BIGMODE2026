@@ -24,7 +24,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0
 [node name="Cube_001" parent="CarModel" index="4"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08879, 0)
 
-[node name="Ball" type="RigidBody3D" parent="."]
+[node name="Ball" type="RigidBody3D" parent="." groups=["car"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0914588, 0)
 physics_material_override = SubResource("PhysicsMaterial_p8s8u")
 lock_rotation = true
@@ -34,7 +34,7 @@ angular_damp = 5.0
 [node name="collison_detetor" type="Area3D" parent="Ball"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ball/collison_detetor"]
-transform = Transform3D(0.9168999, 0, 0.39911717, 0, 1, 0, -0.39911717, 0, 0.9168999, 0, 0.45502532, -1.3117878)
+transform = Transform3D(0.9168999, 0, 0.39911717, -0.0054193106, 0.9999078, 0.012449891, -0.39908037, -0.0135782445, 0.9168154, 0, 0.51520807, -1.2905946)
 shape = SubResource("SphereShape3D_83ose")
 
 [node name="GroundRay" type="RayCast3D" parent="Ball"]
@@ -42,7 +42,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.03246826, 0)
 target_position = Vector3(0, -2.32, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ball"]
-transform = Transform3D(1, 0, 0, 0, -0.005951518, 0.9999823, 0, -0.9999823, -0.005951518, -0.16447127, 0.35937795, -0.024474323)
+transform = Transform3D(1, 0, 0, 0, -0.005951518, 0.9999823, 0, -0.9999823, -0.005951518, 0, 0.34792143, 0)
 shape = SubResource("CapsuleShape3D_83ose")
 
 [node name="CameraRig" type="SpringArm3D" parent="Ball"]
