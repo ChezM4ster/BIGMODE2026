@@ -1,4 +1,4 @@
-extends RigidBody3D
+extends StaticBody3D
 class_name RoadObstacle
 
 enum ObstacleType { SLOWDOWN, OIL, EXPLOSIVES, POINTS_ONLY }
