@@ -25,9 +25,9 @@ albedo_color = Color(0.41568628, 1, 1, 1)
 [node name="TestingCarPhysics" type="Node3D"]
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.714506, -0.30143893, -18.308548)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6330938, -0.30143893, -30.123314)
 use_collision = true
-size = Vector3(58.815495, 0.38183594, 70.86203)
+size = Vector3(101.46167, 0.38183594, 94.49156)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.98255455, -0.14466466, -0.11687068, 0.18095838, 0.8886596, 0.42135292, 0.042903382, -0.43515092, 0.8993348, 0, 3.8933995, 0)
@@ -47,10 +47,13 @@ use_collision = true
 size = Vector3(17.491333, 1.8494873, 3.2592773)
 
 [node name="concrete_blockade" parent="." instance=ExtResource("2_dnrx4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.053233, -0.11052096, -3.6085682)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.053233, -0.11052096, -41.534096)
 
 [node name="OilSpill" parent="." instance=ExtResource("3_etk4d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.748331, -0.08574303, -19.328808)
+
+[node name="OilSpill2" parent="." instance=ExtResource("3_etk4d")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.656763, -0.08574303, -7.123473)
 
 [editable path="CarController"]
 [editable path="CarController/CarModel"]

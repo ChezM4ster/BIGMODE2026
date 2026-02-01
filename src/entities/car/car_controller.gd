@@ -45,9 +45,9 @@ func _physics_process(delta: float) -> void:
 	ground_ray.transform.origin = ball.transform.origin
 	ball.apply_central_force(-car_mesh.global_transform.basis.z * speed_input * boost)
 
-func _process(delta):
+func _process(delta : float):
 	
-	player_input()
+	player_input(delta)
 	state_updater(delta)
 	camera_fov(delta)
 	camera_tilt(delta)
@@ -62,13 +62,15 @@ func rotate_car(delta : float) -> void:
 	var t : float = -rotate_input * ball.linear_velocity.length() / body_tilt
 	car_body.rotation.z = lerp(car_body.rotation.z, t, 10 * delta)
 
-func player_input() -> void:
+var oily_rotate : float = 0.0
+
+func player_input(delta : float) -> void:
 	speed_input = Input.get_axis("accelerate", "brake") * acceleration
 	rotate_input = Input.get_axis("steer_right", "steer_left") * deg_to_rad(steering)
+	
 
 #region Player state methods
 func state_updater(delta : float) -> void:
-	print(car_state)
 	
 	match car_state:
 		DRIVE:
@@ -84,7 +86,7 @@ func drive_state(delta : float) -> void:
 	if !ground_ray.is_colliding():
 		car_state = AIR
 	
-	if Input.is_action_just_pressed("ui_accept") and oily:
+	if Input.is_action_just_pressed("jump") and oily:
 		jump()
 	
 	if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0:
@@ -98,12 +100,17 @@ func drift_state(delta : float) -> void:
 		
 	if Input.is_action_just_released("drift") or speed_input > 1:
 		stop_drift()
+	
+	if Input.is_action_just_pressed("jump") and oily and ground_ray.is_colliding():
+		jump()
 
 func air_state(delta : float) -> void:
-	print("Air state")
 	
 	if ground_ray.is_colliding():
 		car_state = DRIVE
+		
+	if can_air_dash and Input.is_action_just_pressed("drift"):
+		air_dash()
 #endregion
 
 #region Camera Tilting and FOV methods
@@ -156,6 +163,28 @@ func camera_fov(delta : float) -> void:
 	camera.fov = lerp(camera.fov, target_fov, fov_speed * delta)
 #endregion
 
+
+#region Air dash variable
+
+@export var air_dash_force : float = 30.0
+@export var air_dash_cooldown : float = 0.0 
+
+var can_air_dash : bool = true
+
+func air_dash() -> void:
+	var dir :float = Input.get_axis("steer_left", "steer_right")
+
+	if dir == 0:
+		return  
+
+	var right : Vector3 = car_mesh.global_transform.basis.x
+	ball.apply_central_impulse((-right * dir + Vector3.UP * 0.2).normalized() * air_dash_force)
+
+	can_air_dash = false
+
+#endregion
+
+
 #region Drift methods
 func start_drift() -> void:
 	car_state = DRIFT
@@ -190,6 +219,7 @@ func exit_oil() -> void:
 
 func jump() -> void:
 	ball.apply_central_force(Vector3.UP * jump_force)
+	can_air_dash = true
 	print("Jumping")
 
 #endregion

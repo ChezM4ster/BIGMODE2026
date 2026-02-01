@@ -45,6 +45,7 @@ wait_time = 0.8
 one_shot = true
 
 [node name="OilTimer" type="Timer" parent="Timers"]
+wait_time = 2.0
 one_shot = true
 
 [node name="GroundRay" type="RayCast3D" parent="."]
