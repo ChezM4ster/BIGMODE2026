@@ -35,21 +35,23 @@ var speed_input : float = 0.0
 var rotate_input : float = 0.0 
 
 var locked = false
-
 var oily_rotate : float = 0.0
 
 
 func kill_player():
 	car_mesh.visible = false
 	locked = true
-
+	ball.freeze = true
+	ball.linear_velocity = Vector3.ZERO
+	ball.angular_velocity = Vector3.ZERO
 
 func revive_player():
 	car_mesh.visible = true
 	locked = false
 	ball.position = Vector3.ZERO
-	
-func _physics_process(delta: float) -> void:
+	ball.freeze = false
+
+func _physics_process(_delta: float) -> void:
 	car_mesh.transform.origin = ball.transform.origin
 	if get_player_state() != AIR:
 		ball.apply_central_force(-car_mesh.global_transform.basis.z * speed_input * boost)
@@ -71,7 +73,6 @@ func _process(delta):
 func get_player_state() -> int :
 	if locked:
 		return LOCK
-	
 	if ground_ray.is_colliding():
 		if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0 and speed_input < 1:
 			return DRIFT
@@ -114,14 +115,14 @@ func state_updater(delta : float) -> void:
 		AIR:
 			air_state(delta)
 
-func drive_state(delta : float) -> void:
+func drive_state(_delta : float) -> void:
 	if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0:
 		start_drift()
 	
 	if Input.is_action_just_pressed("jump") and oily:
 		jump()
 	
-func drift_state(delta : float) -> void:
+func drift_state(_delta : float) -> void:
 	var steer = Input.get_axis("steer_right", "steer_left")
 	var drift_bias : float = drift_direction * 2
 	rotate_input = (steer * deg_to_rad(steering)) * 0.4 + drift_bias
@@ -130,8 +131,7 @@ func drift_state(delta : float) -> void:
 	if Input.is_action_just_pressed("jump") and oily and ground_ray.is_colliding():
 		jump()
 
-func air_state(delta : float) -> void:
-		
+func air_state(_delta : float) -> void:
 	if can_air_dash and Input.is_action_just_pressed("drift"):
 		air_dash()
 #endregion
@@ -207,7 +207,6 @@ func _on_boost_timer_timeout() -> void:
 	boost = 1.0
 	print("Double boost...")
 
-	
 func _on_oil_timer_timeout() -> void:
 	oily = false
 	print("Oil over")
@@ -217,7 +216,7 @@ func _on_oil_timer_timeout() -> void:
 func explode_car():
 	Explode.emit()
 
-func _on_collison_detetor_body_entered(body) -> void:
+func _on_collison_detetor_body_entered(_body) -> void:
 	var crash_threshold = 15
 	if ball.linear_velocity.length() > crash_threshold:
 		explode_car()

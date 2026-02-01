@@ -1,4 +1,4 @@
-extends Node3D
+extends Node
 
 @onready var explosion_preload = preload("res://assets/models/svx/explosion.tscn")
 
