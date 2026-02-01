@@ -1,4 +1,6 @@
-[gd_scene load_steps=5 format=4 uid="uid://h5g683g8gpi8"]
+[gd_scene load_steps=6 format=4 uid="uid://h5g683g8gpi8"]
+
+[ext_resource type="PackedScene" path="res://scenes/Objs/oil_spill.tscn" id="1_h88oc"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2y2vo"]
 
@@ -47,3 +49,6 @@ skeleton = NodePath("")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(22.892296, 0, 0, 0, 22.892296, 0, 0, 0, 22.892296, 0, 0, 0)
 shape = SubResource("ConcavePolygonShape3D_h88oc")
+
+[node name="OilSpill" parent="." instance=ExtResource("1_h88oc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.046733737, -8.726709, 0.821558)

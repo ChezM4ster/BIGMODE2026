@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://brhqn8y8y7tht"]
+
+[ext_resource type="Script" uid="uid://b02a3h3yavyfm" path="res://src/Game Logic/oil_spill.gd" id="1_5lnmq"]
+[ext_resource type="Texture2D" uid="uid://cpumymsqeakmo" path="res://icon.svg" id="1_hikpx"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hikpx"]
+size = Vector3(2.865, 0.346, 3.54)
+
+[node name="OilSpill" type="Node3D"]
+script = ExtResource("1_5lnmq")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+pixel_size = 0.0244
+texture = ExtResource("1_hikpx")
+
+[node name="PlayerDetector" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.21075916, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerDetector"]
+shape = SubResource("BoxShape3D_hikpx")
+
+[connection signal="body_entered" from="PlayerDetector" to="." method="_on_player_detector_body_entered"]
+[connection signal="body_exited" from="PlayerDetector" to="." method="_on_player_detector_body_exited"]

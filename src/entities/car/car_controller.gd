@@ -36,6 +36,9 @@ var rotate_input : float = 0.0
 
 var locked = false
 
+var oily_rotate : float = 0.0
+
+
 func kill_player():
 	car_mesh.visible = false
 	locked = true
@@ -109,11 +112,14 @@ func state_updater(delta : float) -> void:
 		DRIFT:
 			drift_state(delta)
 		AIR:
-			pass
+			air_state(delta)
 
 func drive_state(delta : float) -> void:
 	if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0:
 		start_drift()
+	
+	if Input.is_action_just_pressed("jump") and oily:
+		jump()
 	
 func drift_state(delta : float) -> void:
 	var steer = Input.get_axis("steer_right", "steer_left")
@@ -121,9 +127,55 @@ func drift_state(delta : float) -> void:
 	rotate_input = (steer * deg_to_rad(steering)) * 0.4 + drift_bias
 	if Input.is_action_just_released("drift") or speed_input > 1:
 		stop_drift()
+	if Input.is_action_just_pressed("jump") and oily and ground_ray.is_colliding():
+		jump()
+
+func air_state(delta : float) -> void:
+		
+	if can_air_dash and Input.is_action_just_pressed("drift"):
+		air_dash()
+#endregion
+
+
+#region Oil related methods
+var oily : bool = false
+
+func enter_oil() -> void:
+	oily = true
+	print("Entered oil")
+
+func exit_oil() -> void:
+	oil_timer.start()
+
+@export var jump_force : float = 800.0
+
+func jump() -> void:
+	ball.apply_central_force(Vector3.UP * jump_force)
+	can_air_dash = true
+	print("Jumping")
 
 #endregion
 
+
+#region Air dash variable
+
+@export var air_dash_force : float = 30.0
+@export var air_dash_cooldown : float = 0.0 
+
+var can_air_dash : bool = true
+
+func air_dash() -> void:
+	var dir :float = Input.get_axis("steer_left", "steer_right")
+
+	if dir == 0:
+		return  
+
+	var right : Vector3 = car_mesh.global_transform.basis.x
+	ball.apply_central_impulse((-right * dir + Vector3.UP * 0.2).normalized() * air_dash_force)
+
+	can_air_dash = false
+
+#endregion
 #region Drift methods
 func start_drift() -> void:
 	print("Starting drift")
@@ -145,6 +197,7 @@ func stop_drift() -> void:
 #region Timer related methods
 @onready var drift_timer: Timer = $Timers/DriftTimer
 @onready var boost_timer: Timer = $Timers/BoostTimer
+@onready var oil_timer: Timer = $Timers/OilTimer
 
 func _on_drift_timer_timeout() -> void:
 	if get_player_state() == DRIFT:
@@ -153,14 +206,18 @@ func _on_drift_timer_timeout() -> void:
 func _on_boost_timer_timeout() -> void:
 	boost = 1.0
 	print("Double boost...")
+
 	
+func _on_oil_timer_timeout() -> void:
+	oily = false
+	print("Oil over")
+
 #endregion
 
 func explode_car():
 	Explode.emit()
 
-func _on_collison_detetor_body_entered(body: Node3D) -> void:
+func _on_collison_detetor_body_entered(body) -> void:
 	var crash_threshold = 15
 	if ball.linear_velocity.length() > crash_threshold:
 		explode_car()
-	
