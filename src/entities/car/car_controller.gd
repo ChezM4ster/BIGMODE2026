@@ -13,16 +13,19 @@ enum {
 @onready var car_body: MeshInstance3D = $CarModel/Cube_001
 @onready var ground_ray: RayCast3D = $Ball/GroundRay
 @onready var ball: RigidBody3D = $Ball
+@onready var efectsys : EfectSystem = $effectsSys
+
 
 var sphere_offset : Vector3 = Vector3.DOWN
 
 @export var acceleration : float = 80.0
+func get_acceleration() -> float : return acceleration * efectsys.get_speed_mult()
+
 @export var steering : float = 20.0
+func get_steering() -> float : return steering * efectsys.get_stearing_mult()
 @export var turn_speed : float = 6.0
 @export var turn_stop_limit : float = 0.75
 @export var body_tilt : float = 35.0
-
-
 @export_category("Gravity")
 @export var normal_gravity : float = 5.0 
 @export var air_gravity : float = 10.0
@@ -36,7 +39,6 @@ var rotate_input : float = 0.0
 
 var locked = false
 var oily_rotate : float = 0.0
-
 
 func kill_player():
 	car_mesh.visible = false
@@ -102,8 +104,8 @@ func rotate_car(delta : float) -> void:
 	mesh_tran = mesh_tran.orthonormalized()
 
 func player_input() -> void:
-	speed_input = Input.get_axis("accelerate", "brake") * acceleration
-	rotate_input = Input.get_axis("steer_right", "steer_left") * deg_to_rad(steering)
+	speed_input = Input.get_axis("accelerate", "brake") * get_acceleration()
+	rotate_input = Input.get_axis("steer_right", "steer_left") * deg_to_rad(get_steering())
 
 #region Player state methods
 func state_updater(delta : float) -> void:
@@ -125,7 +127,7 @@ func drive_state(_delta : float) -> void:
 func drift_state(_delta : float) -> void:
 	var steer = Input.get_axis("steer_right", "steer_left")
 	var drift_bias : float = drift_direction * 2
-	rotate_input = (steer * deg_to_rad(steering)) * 0.4 + drift_bias
+	rotate_input = (steer * deg_to_rad(get_steering())) * 0.4 + drift_bias
 	if Input.is_action_just_released("drift") or speed_input > 1:
 		stop_drift()
 	if Input.is_action_just_pressed("jump") and oily and ground_ray.is_colliding():
@@ -142,6 +144,7 @@ var oily : bool = false
 
 func enter_oil() -> void:
 	oily = true
+	efectsys.add_effect("oily")
 	print("Entered oil")
 
 func exit_oil() -> void:
@@ -221,3 +224,7 @@ func _on_collison_detetor_body_entered(body) -> void:
 		var crash_threshold = 15
 		if ball.linear_velocity.length() > crash_threshold:
 			explode_car()
+
+
+func set_effect(efffect):
+	$effectsSys.set_effect(efffect)

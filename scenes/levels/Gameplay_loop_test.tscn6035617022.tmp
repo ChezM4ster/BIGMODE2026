@@ -1,0 +1,48 @@
+[gd_scene load_steps=10 format=3 uid="uid://c6whp3vj0r7jx"]
+
+[ext_resource type="PackedScene" uid="uid://jvnxibi78muh" path="res://scenes/menus/PlayerUI.tscn" id="1_2ysag"]
+[ext_resource type="Script" uid="uid://bah0yrfloaci8" path="res://scenes/levels/gameplay_loop_test.gd" id="1_m71dd"]
+[ext_resource type="Script" uid="uid://djmdinkohriec" path="res://scenes/levels/road_maker.gd" id="5_1fkri"]
+[ext_resource type="PackedScene" uid="uid://d2tgftykfff67" path="res://scenes/entities/car/car_controller.tscn" id="6_m71dd"]
+[ext_resource type="PackedScene" uid="uid://rn5ngkr55sir" path="res://scenes/menus/StartingMenu.tscn" id="7_k3pcs"]
+[ext_resource type="PackedScene" uid="uid://crwmxpm03x8p5" path="res://scenes/menus/PlayerGameMenu.tscn" id="8_qhywg"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m71dd"]
+sky_top_color = Color(0.75565666, 0.8840033, 0.90147763, 1)
+sky_horizon_color = Color(0.7063007, 0.7600106, 0.7471549, 1)
+
+[sub_resource type="Sky" id="Sky_dnrx4"]
+sky_material = SubResource("ProceduralSkyMaterial_m71dd")
+
+[sub_resource type="Environment" id="Environment_sqt3d"]
+background_mode = 2
+sky = SubResource("Sky_dnrx4")
+glow_enabled = true
+glow_strength = 0.85
+glow_bloom = 0.18
+glow_hdr_threshold = 1.09
+
+[node name="GameplayLoopTest" type="Node"]
+script = ExtResource("1_m71dd")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_sqt3d")
+
+[node name="WorldGen" type="Node" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("5_1fkri")
+player = NodePath("../CarController")
+
+[node name="UI" type="Node" parent="."]
+
+[node name="PlayerUi" parent="UI" instance=ExtResource("1_2ysag")]
+
+[node name="StartingMenu" parent="UI" instance=ExtResource("7_k3pcs")]
+
+[node name="PlayerGameMenu" parent="UI" instance=ExtResource("8_qhywg")]
+
+[node name="CarController" parent="." instance=ExtResource("6_m71dd")]
+acceleration = 200.0
+air_gravity = 15.0
+
+[connection signal="GameStarted" from="UI/StartingMenu" to="." method="_on_starting_menu_game_started"]
+[connection signal="Explode" from="CarController" to="." method="_on_car_controller_explode"]

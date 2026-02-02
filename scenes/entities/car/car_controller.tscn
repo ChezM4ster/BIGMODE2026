@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://d2tgftykfff67"]
+[gd_scene load_steps=8 format=3 uid="uid://d2tgftykfff67"]
 
 [ext_resource type="PackedScene" uid="uid://vqjk61bg3ged" path="res://assets/models/car/car_model.tscn" id="1_7ri6m"]
 [ext_resource type="Script" uid="uid://d4m86pnh5mudt" path="res://src/entities/car/car_controller.gd" id="1_p8s8u"]
+[ext_resource type="Script" uid="uid://btd8k6a2ylvwo" path="res://scenes/entities/car/effects_sys.gd" id="2_3h17m"]
 [ext_resource type="Script" uid="uid://de0mvwbhvfnmy" path="res://scenes/entities/car/camera_rig.gd" id="3_83ose"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p8s8u"]
@@ -17,6 +18,9 @@ height = 2.487442
 [node name="CarController" type="Node"]
 script = ExtResource("1_p8s8u")
 body_tilt = 40.0
+
+[node name="effectsSys" type="Node" parent="."]
+script = ExtResource("2_3h17m")
 
 [node name="CarModel" parent="." instance=ExtResource("1_7ri6m")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)

@@ -1,6 +1,7 @@
 class_name OilSpill
 extends Node3D
 
+
 func _on_player_detector_body_entered(body) -> void:
 	if body.get_parent() is PlayerCar:
 		print("Player on oil")
