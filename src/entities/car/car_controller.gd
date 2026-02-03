@@ -14,21 +14,23 @@ enum {
 @onready var ground_ray: RayCast3D = $Ball/GroundRay
 @onready var ball: RigidBody3D = $Ball
 @onready var efectsys : EfectSystem = $effectsSys
-
+@onready var upgradesys : UpgradeSys = $UpgradeSys
 
 var sphere_offset : Vector3 = Vector3.DOWN
 
 @export var acceleration : float = 80.0
-func get_acceleration() -> float : return acceleration * efectsys.get_speed_mult()
+func get_acceleration() -> float : return acceleration * efectsys.get_speed_mult() * upgradesys.get_speed_mult()
 
 @export var steering : float = 20.0
-func get_steering() -> float : return steering * efectsys.get_stearing_mult()
+func get_steering() -> float : return steering * efectsys.get_stearing_mult() * upgradesys.get_stearing_mult()
+
 @export var turn_speed : float = 6.0
 @export var turn_stop_limit : float = 0.75
 @export var body_tilt : float = 35.0
 @export_category("Gravity")
 @export var normal_gravity : float = 5.0 
 @export var air_gravity : float = 10.0
+
 var drift : bool = false
 var drift_direction : float = 0
 var minimum_drift : bool = false
@@ -144,7 +146,7 @@ var oily : bool = false
 
 func enter_oil() -> void:
 	oily = true
-	efectsys.add_effect("oily")
+	efectsys.add("oily")
 	print("Entered oil")
 
 func exit_oil() -> void:
@@ -224,7 +226,3 @@ func _on_collison_detetor_body_entered(body) -> void:
 		var crash_threshold = 15
 		if ball.linear_velocity.length() > crash_threshold:
 			explode_car()
-
-
-func set_effect(efffect):
-	$effectsSys.set_effect(efffect)

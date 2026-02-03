@@ -36,8 +36,7 @@ player = NodePath("../CarController")
 
 [node name="PlayerUi" parent="UI" instance=ExtResource("1_2ysag")]
 
-[node name="StartingMenu" parent="UI" node_paths=PackedStringArray("player") instance=ExtResource("7_k3pcs")]
-player = NodePath("../../CarController")
+[node name="StartingMenu" parent="UI" instance=ExtResource("7_k3pcs")]
 
 [node name="PlayerGameMenu" parent="UI" instance=ExtResource("8_qhywg")]
 
