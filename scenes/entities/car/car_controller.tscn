@@ -7,7 +7,7 @@
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p8s8u"]
 friction = 0.0
-bounce = 0.26
+absorbent = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_83ose"]
 radius = 0.1

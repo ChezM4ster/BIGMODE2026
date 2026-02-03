@@ -12,8 +12,7 @@ func _on_start_game_pressed() -> void:
 	$AnimationPlayer.play("slide")
 
 
-func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+func _on_animation_player_animation_finished(_anim_name: StringName) -> void:
 	GameStarted.emit()
 	Close()
 	$right_panel.position.x = 993.0
-	
