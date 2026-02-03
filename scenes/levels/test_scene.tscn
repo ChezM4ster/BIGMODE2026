@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dllsagbps1f2x"]
+[gd_scene load_steps=19 format=3 uid="uid://dllsagbps1f2x"]
 
 [ext_resource type="Script" uid="uid://hvbxycwdgrcy" path="res://src/Game Logic/player.gd" id="2_joecx"]
 [ext_resource type="PackedScene" uid="uid://do6xbuatfbkhr" path="res://scenes/entities/obstacles/slow_obstacle.tscn" id="3_sghpj"]
@@ -10,7 +10,13 @@
 [ext_resource type="PackedScene" uid="uid://dod4p70loy1h6" path="res://scenes/entities/obstacles/points_obstacle.tscn" id="6_tc41t"]
 [ext_resource type="PackedScene" path="res://scenes/menus/StartingMenu.tscn" id="7_06sp8"]
 [ext_resource type="PackedScene" path="res://scenes/menus/PlayerGameMenu.tscn" id="8_ej02d"]
+[ext_resource type="Script" uid="uid://03njk6xv6mre" path="res://scenes/levels/trail_strip_3d.gd" id="9_wjwi7"]
 [ext_resource type="Texture2D" uid="uid://c64gubb0wej56" path="res://assets/dirtroad/asphalt_02_diff_4k.jpg" id="11_j3vxy"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sghpj"]
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.1
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_j3vxy"]
 radius = 200.0
@@ -47,6 +53,15 @@ explosives_scene = ExtResource("5_7jghb")
 points_only_scene = ExtResource("6_tc41t")
 metadata/_custom_type_script = "uid://dbpwxfank5rn4"
 
+[node name="TrailStrip3D" type="Node3D" parent="." node_paths=PackedStringArray("target", "sample_origin")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6106672, -6.3702497)
+script = ExtResource("9_wjwi7")
+target = NodePath("../player/car model")
+sample_origin = NodePath("../player/Marker3D")
+width = 1.0
+max_points = 4000
+material = SubResource("StandardMaterial3D_sghpj")
+
 [node name="player" type="Node3D" parent="."]
 script = ExtResource("2_joecx")
 
@@ -68,6 +83,9 @@ disabled = true
 
 [node name="OutOfRangeRemover" type="CollisionShape3D" parent="player/DespawnArea"]
 shape = SubResource("CylinderShape3D_wjwi7")
+
+[node name="Marker3D" type="Marker3D" parent="player"]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 2.4868996e-14, 1.5420302, -6.771807)
 
 [node name="StartingMenu" parent="." instance=ExtResource("7_06sp8")]
 
