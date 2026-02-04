@@ -1,7 +1,7 @@
 extends RigidBody3D
 class_name RoadObstacle
 
-enum ObstacleType { SLOWDOWN, OIL, EXPLOSIVES, POINTS_ONLY }
+enum ObstacleType {SLOWDOWN, OIL, EXPLOSIVES, POINTS_ONLY}
 
 @export var obstacle_type: ObstacleType = ObstacleType.POINTS_ONLY
 @export var points_value: int = 10

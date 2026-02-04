@@ -2,8 +2,8 @@ extends Menu
 
 signal GameStarted
 
-@export var animation_path : AnimationPlayer
-@export var player : PlayerCar
+@export var animation_path: AnimationPlayer
+@export var player: PlayerCar
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_WHEN_PAUSED

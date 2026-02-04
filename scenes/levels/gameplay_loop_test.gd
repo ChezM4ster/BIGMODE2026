@@ -3,7 +3,7 @@ extends Node
 @onready var explosion_preload = preload("res://assets/models/svx/explosion.tscn")
 
 func _on_car_controller_explode() -> void:
-	var explosion : GPUParticles3D = explosion_preload.instantiate()
+	var explosion: GPUParticles3D = explosion_preload.instantiate()
 	explosion.emitting = true
 	explosion.one_shot = true
 	add_child(explosion)

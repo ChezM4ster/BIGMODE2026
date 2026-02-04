@@ -1,7 +1,7 @@
 extends CanvasLayer
 
 
-func change_scene(scene_path : String):
+func change_scene(scene_path: String):
 	$AnimationPlayer.play("fade_in")
 	await $AnimationPlayer.animation_finished
 	

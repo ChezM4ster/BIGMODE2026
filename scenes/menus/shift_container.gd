@@ -12,7 +12,7 @@ extends Container
 		separation = value
 		queue_sort()
 
-@export_enum("right" ,"center" , "left") var alignment = 1:
+@export_enum("right", "center", "left") var alignment = 1:
 	set(value):
 		alignment = value
 		queue_sort()
@@ -21,7 +21,7 @@ func _sort_children() -> void:
 	var current_pos = Vector2.ZERO
 	var container_width = size.x
 	match alignment:
-		0: # "right" 
+		0: # "right"
 			current_pos.x = 0
 		1: # "center"
 			current_pos.x = container_width / 2

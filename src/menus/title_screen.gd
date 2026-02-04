@@ -1,7 +1,7 @@
 class_name TitleScreen
 extends Control
 
-@export var mute_button : Button
+@export var mute_button: Button
 
 func _on_button_pressed() -> void:
 	SceneTransition.change_scene("res://scenes/levels/test_scene.tscn")
