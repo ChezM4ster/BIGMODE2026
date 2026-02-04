@@ -1,12 +1,11 @@
 extends SpringArm3D
 
 
-@onready var car : Node = $"../.."
+@export var car : PlayerCar
 @onready var camera : Camera3D = $Camera3D
-@onready var ground_ray : RayCast3D = $"../GroundRay"
-@onready var mesh : Node3D =$"../../CarModel"
-
-
+@export var ball : Node3D
+@export var ground_ray : RayCast3D
+@export var mesh : Node3D 
 @export var period = 0.1
 @export var magnitude = 0.05
 
@@ -28,9 +27,11 @@ var current_offset : float = 0.0
 @export var drift_offset_speed : float = 10.0
 
 func _process(delta: float) -> void:
-	camera_align(delta)
-	camera_fov(delta)
-	camera_tilt(delta)
+	global_position = ball.global_position
+	rotation.y = ball.rotation.y
+	#camera_align(delta)
+	#camera_fov(delta)
+	#camera_tilt(delta)
 
 func camera_align(delta):
 	if ground_ray.is_colliding():
@@ -50,14 +51,14 @@ func camera_tilt(delta : float) -> void:
 		target_offset = car.drift_direction * drift_camera_offset
 		tilt_speed = drift_tilt_speed
 	else:
-		target_tilt = car.rotate_input * max_camera_tilt
+		target_tilt = car.get_rotation_input() * max_camera_tilt
 	current_tilt = lerp(current_tilt, target_tilt, tilt_speed * delta)
 	current_offset = lerp(current_offset, target_offset, drift_offset_speed * delta)
 	#rotation.z = deg_to_rad(current_tilt)
-	position.x = current_offset
+	
 
 func camera_fov(delta : float) -> void:
-	var speed = car.ball.linear_velocity.length()
+	var speed = car.get_speed().length()
 	var speed_ratio = clamp(speed / fov_max_speed, 0.0, 1.0)
 	speed_ratio = ease(speed_ratio, -1.5)
 

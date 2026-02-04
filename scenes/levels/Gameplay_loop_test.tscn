@@ -31,6 +31,7 @@ environment = SubResource("Environment_sqt3d")
 [node name="WorldGen" type="Node" parent="." node_paths=PackedStringArray("player")]
 script = ExtResource("5_1fkri")
 player = NodePath("../CarController")
+render_distance_z = 4
 
 [node name="UI" type="Node" parent="."]
 

@@ -33,6 +33,7 @@ func add(efect_name : String):
 			upgrade.new(self , 1.1 , 1)
 		_:
 			push_warning("unknown upgrade : " , efect_name )
+
 func get_speed_mult():
 	return upgrade.get_speed_sum()
 

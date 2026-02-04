@@ -8,15 +8,14 @@ enum {
 	AIR,
 	LOCK
 }
+@export var ground_ray: RayCast3D 
 
 @onready var car_mesh : Node3D = $CarModel
 @onready var car_body: MeshInstance3D = $CarModel/Cube_001
-@onready var ground_ray: RayCast3D = $Ball/GroundRay
+
 @onready var ball: RigidBody3D = $Ball
 @onready var efectsys : EfectSystem = $effectsSys
 @onready var upgradesys : UpgradeSys = $UpgradeSys
-
-var sphere_offset : Vector3 = Vector3.DOWN
 
 @export var acceleration : float = 80.0
 func get_acceleration() -> float : return acceleration * efectsys.get_speed_mult() * upgradesys.get_speed_mult()
@@ -31,13 +30,10 @@ func get_steering() -> float : return steering * efectsys.get_stearing_mult() * 
 @export var normal_gravity : float = 5.0 
 @export var air_gravity : float = 10.0
 
-var drift : bool = false
 var drift_direction : float = 0
 var minimum_drift : bool = false
 var boost : float = 1.0
 var drift_boost : float = 1.75
-var speed_input : float = 0.0
-var rotate_input : float = 0.0 
 
 var locked = false
 var oily_rotate : float = 0.0
@@ -55,10 +51,22 @@ func revive_player():
 	ball.position = Vector3.ZERO
 	ball.freeze = false
 
+func get_speed_input():
+	return Input.get_axis("accelerate", "brake") * get_acceleration()
+
+func get_rotation_input():
+	var drift_bias : float = drift_direction * 2
+	if get_player_state() == DRIFT:
+		return (Input.get_axis("steer_right", "steer_left") * deg_to_rad(get_steering())) * 0.4 + drift_bias
+	return Input.get_axis("steer_right", "steer_left") * deg_to_rad(get_steering())
+
+func get_speed() -> Vector3:
+	return car_mesh.global_transform.basis.z * get_speed_input() * boost
+
 func _physics_process(_delta: float) -> void:
 	car_mesh.transform.origin = ball.transform.origin
 	if get_player_state() != AIR:
-		ball.apply_central_force(-car_mesh.global_transform.basis.z * speed_input * boost)
+		ball.apply_central_force(get_speed())
 	apply_gravity_logic()
 
 func apply_gravity_logic() -> void:
@@ -68,7 +76,7 @@ func apply_gravity_logic() -> void:
 		ball.gravity_scale = normal_gravity
 
 func _process(delta):
-	player_input()
+	$GroundRay.position = $CarModel.position
 	state_updater(delta)
 	align_mesh(delta)
 	if ball.linear_velocity.length() > 0.75:
@@ -78,7 +86,7 @@ func get_player_state() -> int :
 	if locked:
 		return LOCK
 	if ground_ray.is_colliding():
-		if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0 and speed_input < 1:
+		if Input.is_action_just_pressed("drift") and Input.get_axis("steer_right", "steer_left") != 0 and get_speed_input() < 1:
 			return DRIFT
 		else:
 			return DRIVE
@@ -86,9 +94,10 @@ func get_player_state() -> int :
 		return AIR
 
 func handle_car_orientation(delta: float) -> void:
-	car_mesh.rotate_object_local(Vector3.UP, rotate_input * turn_speed * delta)
-	var lean_target : float = -rotate_input * ball.linear_velocity.length() / body_tilt
+	car_mesh.rotate_object_local(Vector3.UP, get_rotation_input() * turn_speed * delta)
+	var lean_target : float = -get_rotation_input() * ball.linear_velocity.length() / body_tilt
 	car_body.rotation.z = lerp(car_body.rotation.z, lean_target, 10 * delta)
+
 
 func align_mesh(delta: float) -> void:
 	if ground_ray.is_colliding():
@@ -98,16 +107,14 @@ func align_mesh(delta: float) -> void:
 		var new_z = new_x.cross(normal).normalized()
 		var target_basis = Basis(new_x, normal, new_z)
 		car_mesh.global_basis = car_mesh.global_basis.slerp(target_basis, delta * 10.0).orthonormalized()
+		var target_basis_ball = Basis(new_x, normal, new_z)
+		ball.global_basis = ball.global_basis.slerp(target_basis_ball, delta * 10.0).orthonormalized()
 
 func rotate_car(delta : float) -> void:
 	var mesh_tran = car_mesh.global_transform
-	var new_basis : Basis = mesh_tran.basis.rotated(mesh_tran.basis.y, rotate_input)
+	var new_basis : Basis = mesh_tran.basis.rotated(mesh_tran.basis.y, get_rotation_input())
 	mesh_tran.basis = mesh_tran.basis.slerp(new_basis, turn_speed * delta)
 	mesh_tran = mesh_tran.orthonormalized()
-
-func player_input() -> void:
-	speed_input = Input.get_axis("accelerate", "brake") * get_acceleration()
-	rotate_input = Input.get_axis("steer_right", "steer_left") * deg_to_rad(get_steering())
 
 #region Player state methods
 func state_updater(delta : float) -> void:
@@ -120,17 +127,13 @@ func state_updater(delta : float) -> void:
 			air_state(delta)
 
 func drive_state(_delta : float) -> void:
-	if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0:
+	if Input.is_action_just_pressed("drift") and get_rotation_input() != 0 and get_speed_input() < 0:
 		start_drift()
-	
 	if Input.is_action_just_pressed("jump") and oily:
 		jump()
-	
+
 func drift_state(_delta : float) -> void:
-	var steer = Input.get_axis("steer_right", "steer_left")
-	var drift_bias : float = drift_direction * 2
-	rotate_input = (steer * deg_to_rad(get_steering())) * 0.4 + drift_bias
-	if Input.is_action_just_released("drift") or speed_input > 1:
+	if Input.is_action_just_released("drift") or get_speed_input() > 1:
 		stop_drift()
 	if Input.is_action_just_pressed("jump") and oily and ground_ray.is_colliding():
 		jump()
@@ -171,13 +174,10 @@ var can_air_dash : bool = true
 
 func air_dash() -> void:
 	var dir :float = Input.get_axis("steer_left", "steer_right")
-
 	if dir == 0:
 		return  
-
 	var right : Vector3 = car_mesh.global_transform.basis.x
 	ball.apply_central_impulse((-right * dir + Vector3.UP * 0.2).normalized() * air_dash_force)
-
 	can_air_dash = false
 
 #endregion
@@ -185,7 +185,7 @@ func air_dash() -> void:
 func start_drift() -> void:
 	print("Starting drift")
 	minimum_drift = false
-	drift_direction = rotate_input
+	drift_direction = get_rotation_input()
 	drift_timer.start()
 	
 func stop_drift() -> void:
