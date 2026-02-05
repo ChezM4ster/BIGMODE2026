@@ -1,7 +1,8 @@
 extends Node3D
 class_name TrailStrip3D
-
+#car
 @export var target: Node3D
+#point under car where trail should be left behind
 @export var sample_origin: Node3D
 @export var collision_mask: int = 1
 

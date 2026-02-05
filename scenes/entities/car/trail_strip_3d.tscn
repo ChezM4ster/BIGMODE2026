@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://f8aju1iw0wpt"]
+
+[ext_resource type="Script" uid="uid://03njk6xv6mre" path="res://src/entities/car/trail_strip_3d.gd" id="1_p5e0x"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gajjp"]
+cull_mode = 2
+albedo_color = Color(0, 0, 0, 1)
+roughness = 0.1
+
+[node name="TrailStrip3D" type="Node3D"]
+script = ExtResource("1_p5e0x")
+width = 1.0
+max_points = 4000
+material = SubResource("StandardMaterial3D_gajjp")

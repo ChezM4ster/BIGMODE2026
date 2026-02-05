@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dbq33beb413ax"]
+[gd_scene load_steps=8 format=3 uid="uid://dbq33beb413ax"]
 
 [ext_resource type="PackedScene" uid="uid://d2tgftykfff67" path="res://scenes/entities/car/car_controller.tscn" id="1_7304e"]
 [ext_resource type="PackedScene" uid="uid://xgsjck238po3" path="res://assets/models/obstacles/concrete_blockade/concrete_blockade.tscn" id="2_dnrx4"]
+[ext_resource type="PackedScene" uid="uid://f8aju1iw0wpt" path="res://scenes/entities/car/trail_strip_3d.tscn" id="3_oqw64"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7304e"]
 sky_top_color = Color(0.75565666, 0.8840033, 0.90147763, 1)
@@ -24,7 +25,7 @@ albedo_color = Color(0.41568628, 1, 1, 1)
 [node name="TestingCarPhysics" type="Node3D"]
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.714506, -0.30143893, -18.308548)
+transform = Transform3D(5.25, 0, 0, 0, 1, 0, 0, 0, 5.25, 10.714506, -0.30143893, -18.308548)
 use_collision = true
 size = Vector3(58.815495, 0.38183594, 70.86203)
 
@@ -35,6 +36,9 @@ shadow_enabled = true
 
 [node name="CarController" parent="." instance=ExtResource("1_7304e")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3546852, 0)
+
+[node name="TrailStart" type="Marker3D" parent="CarController/CarModel" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.131365e-08, 0, -0.7013464)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_etk4d")
@@ -47,6 +51,10 @@ size = Vector3(17.491333, 1.8494873, 3.2592773)
 
 [node name="concrete_blockade" parent="." instance=ExtResource("2_dnrx4")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.053233, -0.11052096, -3.6085682)
+
+[node name="TrailStrip3D" parent="." node_paths=PackedStringArray("target", "sample_origin") instance=ExtResource("3_oqw64")]
+target = NodePath("../CarController/CarModel")
+sample_origin = NodePath("../CarController/CarModel/TrailStart")
 
 [editable path="CarController"]
 [editable path="CarController/CarModel"]
