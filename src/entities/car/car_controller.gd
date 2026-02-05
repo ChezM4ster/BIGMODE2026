@@ -24,6 +24,10 @@ var sphere_offset : Vector3 = Vector3.DOWN
 
 @onready var car_body: MeshInstance3D = $CarModel/Cube_001
 
+@onready var front_left: MeshInstance3D = $CarModel/Cube_001/FrontLeft
+
+@onready var front_right: MeshInstance3D = $CarModel/Cube_001/FrontRight
+
 @onready var ground_ray: RayCast3D = $GroundRay
 
 @onready var ball: RigidBody3D = $Ball
@@ -85,6 +89,7 @@ func drive_state(delta : float) -> void:
 	## Will be used to check for air state
 	if !ground_ray.is_colliding():
 		car_state = AIR
+	
 	
 	if Input.is_action_just_pressed("jump") and oily:
 		jump()
@@ -178,7 +183,7 @@ func air_dash() -> void:
 		return  
 
 	var right : Vector3 = car_mesh.global_transform.basis.x
-	ball.apply_central_impulse((-right * dir + Vector3.UP * 0.2).normalized() * air_dash_force)
+	ball.apply_central_impulse((-right * dir + Vector3.UP * 1.0).normalized() * air_dash_force)
 
 	can_air_dash = false
 
@@ -215,7 +220,7 @@ func enter_oil() -> void:
 func exit_oil() -> void:
 	oil_timer.start()
 
-@export var jump_force : float = 800.0
+@export var jump_force : float = 1000.0
 
 func jump() -> void:
 	ball.apply_central_force(Vector3.UP * jump_force)

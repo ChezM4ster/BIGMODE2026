@@ -1,23 +1,30 @@
-[gd_scene load_steps=8 format=3 uid="uid://dbq33beb413ax"]
+[gd_scene load_steps=12 format=3 uid="uid://dbq33beb413ax"]
 
 [ext_resource type="PackedScene" uid="uid://d2tgftykfff67" path="res://scenes/entities/car/car_controller.tscn" id="1_7304e"]
+[ext_resource type="Texture2D" uid="uid://bwj1tq7j48ifo" path="res://assets/city_skybox.hdr" id="2_1qk30"]
 [ext_resource type="PackedScene" uid="uid://xgsjck238po3" path="res://assets/models/obstacles/concrete_blockade/concrete_blockade.tscn" id="2_dnrx4"]
 [ext_resource type="PackedScene" uid="uid://drlk0cebtjr1v" path="res://scenes/Objs/oil_spill.tscn" id="3_etk4d"]
+[ext_resource type="PackedScene" uid="uid://dlwlm0ajgl4qe" path="res://assets/models/obstacles/buildings/building_1/building_1.tscn" id="4_lovnp"]
+[ext_resource type="PackedScene" uid="uid://l180hca6api6" path="res://assets/models/obstacles/barrel/barrel.tscn" id="5_wg2dr"]
+[ext_resource type="PackedScene" uid="uid://b7xoqxcficdfv" path="res://assets/models/obstacles/buildings/building_2/building_2.tscn" id="7_3w316"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7304e"]
-sky_top_color = Color(0.75565666, 0.8840033, 0.90147763, 1)
-sky_horizon_color = Color(0.7063007, 0.7600106, 0.7471549, 1)
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_3w316"]
+panorama = ExtResource("2_1qk30")
 
 [sub_resource type="Sky" id="Sky_dnrx4"]
-sky_material = SubResource("ProceduralSkyMaterial_7304e")
+sky_material = SubResource("PanoramaSkyMaterial_3w316")
 
 [sub_resource type="Environment" id="Environment_etk4d"]
 background_mode = 2
 sky = SubResource("Sky_dnrx4")
+ambient_light_source = 3
+reflected_light_source = 2
+tonemap_mode = 3
 glow_enabled = true
 glow_strength = 0.85
 glow_bloom = 0.18
 glow_hdr_threshold = 1.09
+adjustment_enabled = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7304e"]
 albedo_color = Color(0.41568628, 1, 1, 1)
@@ -47,13 +54,27 @@ use_collision = true
 size = Vector3(17.491333, 1.8494873, 3.2592773)
 
 [node name="concrete_blockade" parent="." instance=ExtResource("2_dnrx4")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.053233, -0.11052096, -41.534096)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.053233, -0.26788974, -41.534096)
 
 [node name="OilSpill" parent="." instance=ExtResource("3_etk4d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.748331, -0.08574303, -19.328808)
 
 [node name="OilSpill2" parent="." instance=ExtResource("3_etk4d")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.656763, -0.08574303, -7.123473)
+
+[node name="building_1" parent="." instance=ExtResource("4_lovnp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 0, -50.60325)
+
+[node name="barrel" parent="." instance=ExtResource("5_wg2dr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.830558, -0.08094323, -31.812653)
+
+[node name="building_2" parent="." instance=ExtResource("7_3w316")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, -0.37907767, -52)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.265625, 6.878327, -72.82202)
+use_collision = true
+size = Vector3(9.87793, 1, 32.934937)
 
 [editable path="CarController"]
 [editable path="CarController/CarModel"]
