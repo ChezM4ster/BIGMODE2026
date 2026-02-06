@@ -18,23 +18,18 @@ radius = 0.1
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_83ose"]
 height = 2.487442
 
-[node name="CarController" type="Node" node_paths=PackedStringArray("ground_ray")]
+[node name="CarController" type="Node" node_paths=PackedStringArray("camera", "ground_ray", "car_mesh", "car_body")]
 script = ExtResource("1_p8s8u")
+camera = NodePath("Camera_Pivot/CameraRig")
 ground_ray = NodePath("Ball/GroundRay")
+car_mesh = NodePath("CarModel")
+car_body = NodePath("CarModel/Cube_001")
 
 [node name="effectsSys" type="Node" parent="."]
 script = ExtResource("2_3h17m")
 
 [node name="UpgradeSys" type="Node" parent="."]
 script = ExtResource("3_uece1")
-
-[node name="CarModel" parent="." instance=ExtResource("1_7ri6m")]
-
-[node name="Cube_001" parent="CarModel" index="3"]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0.05818808, 0)
-
-[node name="Cube" parent="CarModel/Cube_001" index="0"]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="Camera_Pivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9063077, 0.42261824, 0, -0.42261824, 0.9063077, 0, 1.7636722, -1.4673301)
@@ -51,6 +46,14 @@ pivot = NodePath("..")
 
 [node name="Camera3D" type="Camera3D" parent="Camera_Pivot/CameraRig"]
 current = true
+
+[node name="CarModel" parent="." instance=ExtResource("1_7ri6m")]
+
+[node name="Cube_001" parent="CarModel" index="3"]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0.05818808, 0)
+
+[node name="Cube" parent="CarModel/Cube_001" index="0"]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="Ball" type="RigidBody3D" parent="." groups=["car"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09910929, 0)

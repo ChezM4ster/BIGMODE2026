@@ -9,11 +9,10 @@ enum {
 	LOCK
 }
 
-
 @export var camera : PlayerCamera
 @export var ground_ray: RayCast3D
-@onready var car_mesh: Node3D = $CarModel
-@onready var car_body: MeshInstance3D = $CarModel/Cube_001
+@export var car_mesh: Node3D
+@export var car_body: MeshInstance3D
 
 @onready var ball: RigidBody3D = $Ball
 @onready var efectsys: EfectSystem = $effectsSys
@@ -41,60 +40,7 @@ var drift_boost: float = 1.75
 
 var locked = false
 var oily_rotate: float = 0.0
-
-func kill_player():
-	car_mesh.visible = false
-	locked = true
-	ball.freeze = true
-	ball.linear_velocity = Vector3.ZERO
-	ball.angular_velocity = Vector3.ZERO
-
-func revive_player():
-	car_mesh.visible = true
-	locked = false
-	ball.position = Vector3.ZERO
-	ball.freeze = false
-
-func get_speed_input():
-	return Input.get_axis("accelerate", "brake") * get_acceleration()
-
-func get_rotation_input():
-	var drift_bias: float = drift_direction * 2
-	if get_player_state() == DRIFT:
-		return (Input.get_axis("steer_right", "steer_left") * deg_to_rad(get_steering())) * 0.4 + drift_bias
-	return Input.get_axis("steer_right", "steer_left") * deg_to_rad(get_steering())
-
-func get_speed() -> Vector3:
-	return car_mesh.global_transform.basis.z * get_speed_input() * boost
-
-func _physics_process(_delta: float) -> void:
-	if get_player_state() != AIR:
-		ball.apply_central_force(get_speed())
-	apply_gravity_logic()
-	#car_mesh.transform.origin = ball.transform.origin
-
-func apply_gravity_logic() -> void:
-	if get_player_state() == AIR:
-		ball.gravity_scale = air_gravity
-	else:
-		ball.gravity_scale = normal_gravity
-
-func _process(delta): 
-	state_updater(delta)
-	
-	if ball.linear_velocity.length() > 0.75:
-		handle_car_orientation(delta)
-	align_mesh(delta)
-
-func state_updater(delta: float) -> void:
-	match get_player_state():
-		DRIVE:
-			drive_state(delta)
-		DRIFT:
-			drift_state(delta)
-		AIR:
-			air_state(delta)
-
+#region SPEED AND STATE
 func get_player_state() -> int:
 	if locked:
 		return LOCK
@@ -106,38 +52,63 @@ func get_player_state() -> int:
 	else:
 		return AIR
 
-func handle_car_orientation(delta: float) -> void:
-	car_mesh.rotate_object_local(Vector3.UP, get_rotation_input() * get_turn_speed() * delta)
-	var lean_target: float = - get_rotation_input() * body_tilt
-	car_body.rotation.z = lerp(car_body.rotation.z, lean_target, 5 * delta)
+func get_speed_input()-> float:
+	return Input.get_axis("accelerate", "brake") * get_acceleration()
+
+func get_rotation_input()-> float:
+	var drift_bias: float = drift_direction * 2
+	if get_player_state() == DRIFT:
+		return (Input.get_axis("steer_right", "steer_left") * deg_to_rad(get_steering())) * 0.4 + drift_bias
+	return Input.get_axis("steer_right", "steer_left") * deg_to_rad(get_steering())
+
+func get_speed() -> Vector3:
+	return car_mesh.global_transform.basis.z * get_speed_input() * boost
+
+func state_updater() -> void:
+	match get_player_state():
+		DRIVE:
+			if Input.is_action_just_pressed("drift") and get_rotation_input() != 0 and get_speed_input() < 0:
+				start_drift()
+			if Input.is_action_just_pressed("jump") and oily:
+				jump()
+		DRIFT:
+			if Input.is_action_just_released("drift") or get_speed_input() > 1:
+				stop_drift()
+			if Input.is_action_just_pressed("jump") and oily and ground_ray.is_colliding():
+				jump()
+		AIR:
+			if can_air_dash and Input.is_action_just_pressed("drift"):
+				air_dash()
+#endregion
+
+@export var torque_power: float = 20.0 # Adjust this value in Inspector
+
+func _physics_process(_delta: float) -> void:
+	if get_player_state() == AIR:
+		ball.gravity_scale = air_gravity
+	else:
+		ball.gravity_scale = normal_gravity
+	if get_player_state() != AIR:
+		ball.apply_central_force(get_speed())
+		var turn_force = -get_rotation_input() * torque_power
+		ball.apply_torque(Vector3(0, turn_force, 0))
+
+func _process(delta: float) -> void:
+	car_mesh.global_transform = ball.global_transform
+	state_updater()
+	align_mesh(delta)
+	if ball.linear_velocity.length() > 0.75:
+		var lean_target = -get_rotation_input() * body_tilt
+		car_mesh.rotation.z = lerp_angle(car_mesh.rotation.z, lean_target, 5 * delta)
 
 func align_mesh(delta: float) -> void:
 	if ground_ray.is_colliding():
 		var normal = ground_ray.get_collision_normal()
-		var mesh_tran = car_mesh.global_transform.basis
-		var new_x = normal.cross(mesh_tran.z).normalized()
+		var mesh_basis = car_mesh.global_basis
+		var new_x = normal.cross(mesh_basis.z).normalized()
 		var new_z = new_x.cross(normal).normalized()
 		var target_basis = Basis(new_x, normal, new_z)
-		car_mesh.global_basis = car_mesh.global_basis.slerp(target_basis, delta * 10.0).orthonormalized()
-		var target_basis_ball = Basis(new_x, normal, new_z)
-		#ball.global_basis = ball.global_basis.slerp(target_basis_ball, delta * 10.0).orthonormalized()
-
-func drive_state(_delta: float) -> void:
-	if Input.is_action_just_pressed("drift") and get_rotation_input() != 0 and get_speed_input() < 0:
-		start_drift()
-	if Input.is_action_just_pressed("jump") and oily:
-		jump()
-
-func drift_state(_delta: float) -> void:
-	if Input.is_action_just_released("drift") or get_speed_input() > 1:
-		stop_drift()
-	if Input.is_action_just_pressed("jump") and oily and ground_ray.is_colliding():
-		jump()
-
-func air_state(_delta : float) -> void:
-	if can_air_dash and Input.is_action_just_pressed("drift"):
-		air_dash()
-#endregion
+		car_mesh.global_basis = mesh_basis.slerp(target_basis, delta * 10.0).orthonormalized()
 
 #region Oil related methods
 var oily: bool = false
@@ -177,13 +148,12 @@ func air_dash() -> void:
 
 #endregion
 
-
 #region Drift methods
 func start_drift() -> void:
 	minimum_drift = false
 	drift_direction = get_rotation_input()
 	drift_timer.start()
-	
+
 func stop_drift() -> void:
 	if minimum_drift:
 		boost = drift_boost
@@ -213,6 +183,20 @@ func _on_oil_timer_timeout() -> void:
 	print("Oil over")
 
 #endregion
+
+
+func kill_player():
+	car_mesh.visible = false
+	locked = true
+	ball.freeze = true
+	ball.linear_velocity = Vector3.ZERO
+	ball.angular_velocity = Vector3.ZERO
+
+func revive_player():
+	car_mesh.visible = true
+	locked = false
+	ball.position = Vector3.ZERO
+	ball.freeze = false
 
 func explode_car():
 	Explode.emit()
