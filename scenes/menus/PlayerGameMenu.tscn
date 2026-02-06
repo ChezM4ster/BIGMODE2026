@@ -4,12 +4,13 @@
 [ext_resource type="PackedScene" uid="uid://dn67xjb30xr03" path="res://scenes/menus/MainMenu.tscn" id="2_qiiq7"]
 
 [node name="PlayerGameMenu" type="CanvasLayer"]
+visible = false
 script = ExtResource("1_mekdr")
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 position = Vector2(40, 21)
 color = Color(0, 0, 0, 0.21568628)
-polygon = PackedVector2Array(-102, -44, -109, 665, 1174, 669, 1542, 0, 444, -141)
+polygon = PackedVector2Array(-102, -44, -109, 665, 1174, 669, 1207.6526, 290.5312, 1184.4204, -56.628304)
 
 [node name="MainMenu" parent="." instance=ExtResource("2_qiiq7")]
 offset_left = 52.83

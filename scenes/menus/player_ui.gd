@@ -7,30 +7,28 @@ class combo:
 	# public
 	var root_node : Node 
 	var TEXT : String 
-	var combo_time = 1 
-	var count = 1
-	var point_value = 100
+	var combo_time : float = 1 
+	var count : int = 1
+	var point_value : int = 100
 	
-	
-	#private 
+	# private 
 	var timer : Timer
 	var label : Label
 	
-	var label_size_y = 78
+	var label_size_y :float = 78
 	var offset_ : Vector2 = Vector2(10 , 10)
 	
-	
-	static func get_text(new_text_ : String , count_ : int):
+	static func get_text(new_text_ : String , count_ : int) -> String:
 		return new_text_ + " x " + str(count_)  
 	
 	func create_timer():
 		if root_node == null:
-			push_warning("you're trying to reset combo time on unfinished combo there is no root node set how you even want to rest timer on a node that you coudnt even create wtf arre you doing")
+			push_warning("you're trying to reset combo time on unfinished combo there is no root node set how you even want to reset timer on a node that you coudnt even create wtf arre you doing")
 			return
 		if timer == null:
 			timer = Timer.new()
 			root_node.add_child(timer)
-			timer.timeout.connect(destr)
+			timer.timeout.connect(destructor)
 	
 	func set_timer(new_time_ : float):
 		create_timer()
@@ -44,15 +42,15 @@ class combo:
 			label = Label.new()
 			label.text = get_text(TEXT , count)
 			label.position.x = offset_.x 
-			
-			var label_index = all_combo.find(self) - 1
+			var label_index = all_combo.find(self) 
 			label.position.y =  offset_.y + label_index * label_size_y
 			root_node.add_child(label)
 	
 	func refresh_label():
 		create_label()
 		label.text = get_text(TEXT , count)
-		var label_index = all_combo.find(self) - 1
+		prints(label.text , label.visible , label.position , all_combo.find(self) , all_combo.size())
+		var label_index = all_combo.find(self) 
 		label.position.y = offset_.y + label_index * label_size_y
 	
 	func _init(text_ : String , time : float , point_val : int , root_node_ : Node) -> void:
@@ -69,7 +67,7 @@ class combo:
 			create_label()
 			all_combo.append(self)
 			
-	func destr():
+	func destructor():
 		TotalPoints += point_value * count * count
 		all_combo.erase(self)
 		if timer != null:
@@ -91,4 +89,4 @@ func _ready() -> void:
 	Open()
 
 func _process(_delta: float) -> void:
-	$point_label.text = str(combo.get_total_points()).replace("0" , "o") ### the font i used dont have 0 for some reasone
+	$point_label.text = str(combo.get_total_points()).replace("0" , "o") ### the font i used dont have 0 for some reason

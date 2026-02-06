@@ -8,8 +8,8 @@ enum {
 	AIR,
 	LOCK
 }
-@export var ground_ray: RayCast3D
 
+@export var ground_ray: RayCast3D
 @onready var car_mesh: Node3D = $CarModel
 @onready var car_body: MeshInstance3D = $CarModel/Cube_001
 
@@ -24,6 +24,8 @@ func get_acceleration() -> float: return acceleration * efectsys.get_speed_mult(
 func get_steering() -> float: return steering * efectsys.get_stearing_mult() * upgradesys.get_stearing_mult()
 
 @export var turn_speed: float = 6.0
+func get_turn_speed() -> float : return turn_speed * (int(get_player_state() == AIR) + 1 )
+
 @export var turn_stop_limit: float = 0.75
 @export var body_tilt: float = 35.0
 @export_category("Gravity")
@@ -94,10 +96,11 @@ func get_player_state() -> int:
 		return AIR
 	
 func handle_car_orientation(delta: float) -> void:
-	car_mesh.rotate_object_local(Vector3.UP, get_rotation_input() * turn_speed * delta)
-	var lean_target: float = - get_rotation_input() * ball.linear_velocity.length() / body_tilt
-	car_body.rotation.z = lerp(car_body.rotation.z, lean_target, 10 * delta)
-	
+	car_mesh.rotate_object_local(Vector3.UP, get_rotation_input() * get_turn_speed() * delta)
+	var lean_target: float = - get_rotation_input() * body_tilt
+	car_body.rotation.z = lerp_angle(car_body.rotation.z, lean_target, 5 * delta)
+
+
 func align_mesh(delta: float) -> void:
 	if ground_ray.is_colliding():
 		var normal = ground_ray.get_collision_normal()
@@ -108,12 +111,6 @@ func align_mesh(delta: float) -> void:
 		car_mesh.global_basis = car_mesh.global_basis.slerp(target_basis, delta * 10.0).orthonormalized()
 		var target_basis_ball = Basis(new_x, normal, new_z)
 		ball.global_basis = ball.global_basis.slerp(target_basis_ball, delta * 10.0).orthonormalized()
-
-func rotate_car(delta: float) -> void:
-	var mesh_tran = car_mesh.global_transform
-	var new_basis: Basis = mesh_tran.basis.rotated(mesh_tran.basis.y, get_rotation_input())
-	mesh_tran.basis = mesh_tran.basis.slerp(new_basis, turn_speed * delta)
-	mesh_tran = mesh_tran.orthonormalized()
 
 #region Player state methods
 func state_updater(delta: float) -> void:
@@ -182,7 +179,6 @@ func air_dash() -> void:
 #endregion
 #region Drift methods
 func start_drift() -> void:
-	print("Starting drift")
 	minimum_drift = false
 	drift_direction = get_rotation_input()
 	drift_timer.start()

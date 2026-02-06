@@ -4,8 +4,8 @@ extends SpringArm3D
 @export var car: PlayerCar
 @onready var camera: Camera3D = $Camera3D
 @export var ball: Node3D
-@export var ground_ray: RayCast3D
-@export var mesh: Node3D
+@export var pivot : Node3D
+
 @export var period = 0.1
 @export var magnitude = 0.05
 
@@ -26,7 +26,6 @@ var current_offset: float = 0.0
 @export var drift_camera_offset: float = 3.0
 @export var drift_offset_speed: float = 10.0
 
-
 func get_camera_fov(delta: float) -> float:
 	var speed = car.get_speed().length()
 	var speed_ratio = clamp(speed / fov_max_speed, 0.0, 1.0)
@@ -34,29 +33,7 @@ func get_camera_fov(delta: float) -> float:
 	var target_fov = lerp(base_fov, max_fov, speed_ratio)
 	return lerp(camera.fov, target_fov, fov_speed * delta)
 
-func get_camera_rotation():
-	pass
-
-
-func _process(delta: float) -> void:
-	global_position = ball.global_position
-	rotation.y = ball.rotation.y
-	
-	camera.fov = get_camera_fov(delta)
-	#camera_align(delta)
-	#camera_fov(delta)
-	#camera_tilt(delta)
-
-func camera_align(delta):
-	if ground_ray.is_colliding():
-		var normal = ground_ray.get_collision_normal()
-		var target_basis = Basis.looking_at(-global_basis.z, normal)
-		global_basis = global_basis.slerp(target_basis, delta * 8).orthonormalized()
-		rotation.x = deg_to_rad(-18)
-		rotation.y = deg_to_rad(mesh.rotation.x)
-		rotation.z = deg_to_rad(mesh.rotation.z)
-
-func camera_tilt(delta: float) -> void:
+func get_camera_tilt(delta: float) -> float:
 	var target_tilt: float = 0.0
 	var target_offset: float = 0.0
 	var tilt_speed: float = camera_tilt_speed
@@ -68,7 +45,13 @@ func camera_tilt(delta: float) -> void:
 		target_tilt = car.get_rotation_input() * max_camera_tilt
 	current_tilt = lerp(current_tilt, target_tilt, tilt_speed * delta)
 	current_offset = lerp(current_offset, target_offset, drift_offset_speed * delta)
-	#rotation.z = deg_to_rad(current_tilt)
+	return deg_to_rad(current_tilt)
+
+func _process(delta: float) -> void:
+	pivot.global_position = ball.global_position
+	pivot.rotation.y = lerp_angle(pivot.rotation.y, ball.rotation.y, delta * 1.5)
+	camera.fov = get_camera_fov(delta)
+	rotation.z = get_camera_tilt(delta)
 
 func camera_shake():
 	var initial_transform = camera.transform

@@ -6,6 +6,8 @@ signal GameStarted
 @export var player: PlayerCar
 
 func _ready() -> void:
+	if player == null:
+		push_warning("you didnt set up a player for the Game Starting menu")
 	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 	Open()
 
@@ -18,13 +20,21 @@ func _on_animation_player_animation_finished(_anim_name: StringName) -> void:
 	$right_panel.position.x = 993.0
 
 func _on_speed_button_pressed() -> void:
+	if player == null:
+		return
 	player.upgradesys.add("speed")
 
 func _on_stearing_button_pressed() -> void:
+	if player == null:
+		return
 	player.upgradesys.add("steering")
 
 func _on_slickness_button_pressed() -> void:
+	if player == null:
+		return
 	player.upgradesys.add("slickness")
 
 func _on_power_button_pressed() -> void:
+	if player == null:
+		return
 	player.upgradesys.add("power")
