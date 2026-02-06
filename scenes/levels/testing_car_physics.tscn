@@ -68,6 +68,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19, 0, -50.60325)
 [node name="barrel" parent="." instance=ExtResource("5_wg2dr")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.830558, -0.08094323, -31.812653)
 
+[node name="barrel2" parent="." instance=ExtResource("5_wg2dr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18.87711, -0.08094323, -38.165104)
+
+[node name="barrel3" parent="." instance=ExtResource("5_wg2dr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.095658, -0.08094323, -44.00312)
+
+[node name="barrel4" parent="." instance=ExtResource("5_wg2dr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0455084, -0.08094323, -37.026512)
+
 [node name="building_2" parent="." instance=ExtResource("7_3w316")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31, -0.37907767, -52)
 

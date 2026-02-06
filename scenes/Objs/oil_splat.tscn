@@ -1,0 +1,109 @@
+[gd_scene load_steps=18 format=3 uid="uid://dbyrtnqgaqysg"]
+
+[ext_resource type="Script" uid="uid://2daehw6hqhyg" path="res://scenes/Objs/oil_splat.gd" id="1_2v8rc"]
+[ext_resource type="Shader" uid="uid://bvimmw774tfeu" path="res://src/shaders/oil.tres" id="1_xb7m1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2v8rc"]
+render_priority = 0
+shader = ExtResource("1_xb7m1")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_ofw8q"]
+direction = Vector3(0, 0.19, -0.005)
+spread = 72.935
+initial_velocity_max = 3.85
+scale_min = 0.53
+scale_max = 1.53
+scale_over_velocity_max = 395.99
+
+[sub_resource type="QuadMesh" id="QuadMesh_3tps2"]
+
+[sub_resource type="Curve" id="Curve_ofw8q"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.3333333, 0.9662922), 0.0, 0.0, 0, 0, Vector2(0.67424244, 0.97752815), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_3tps2"]
+curve = SubResource("Curve_ofw8q")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_xb7m1"]
+emission_shape = 3
+emission_box_extents = Vector3(1, 1, 1)
+spread = 180.0
+flatness = 1.0
+initial_velocity_min = 20.449999
+initial_velocity_max = 25.8
+scale_min = 0.35
+scale_max = 0.59
+scale_curve = SubResource("CurveTexture_3tps2")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2v8rc"]
+emission_enabled = true
+emission = Color(0.5484096, 0.569383, 0.5345023, 1)
+emission_energy_multiplier = 47.25
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ofw8q"]
+material = SubResource("StandardMaterial3D_2v8rc")
+top_radius = 0.1
+bottom_radius = 0.0
+height = 1.546
+rings = 114
+
+[sub_resource type="Gradient" id="Gradient_klje8"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_2tlcg"]
+gradient = SubResource("Gradient_klje8")
+
+[sub_resource type="Curve" id="Curve_hcuv7"]
+_data = [Vector2(0, 0.42696637), 0.0, 0.0, 0, 0, Vector2(0.4318182, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.022471905), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_v4t3d"]
+curve = SubResource("Curve_hcuv7")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7fybt"]
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector3(0, -1, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 3.37
+gravity = Vector3(0, 9.8, 0)
+scale_min = 1.26
+scale_max = 2.23
+scale_curve = SubResource("CurveTexture_v4t3d")
+color = Color(0, 0.51534724, 0.5325778, 1)
+color_ramp = SubResource("GradientTexture1D_2tlcg")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ei71f"]
+albedo_color = Color(0.13, 0.10816, 0.098799996, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_lwck0"]
+material = SubResource("StandardMaterial3D_ei71f")
+
+[node name="OilSplat" type="Node3D"]
+script = ExtResource("1_2v8rc")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8897991, 0)
+material_override = SubResource("ShaderMaterial_2v8rc")
+emitting = false
+amount = 13
+lifetime = 0.56
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_ofw8q")
+draw_pass_1 = SubResource("QuadMesh_3tps2")
+
+[node name="GPUParticles3D2" type="GPUParticles3D" parent="."]
+emitting = false
+lifetime = 0.25
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_xb7m1")
+draw_pass_1 = SubResource("CylinderMesh_ofw8q")
+
+[node name="GPUParticles3D3" type="GPUParticles3D" parent="."]
+emitting = false
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_7fybt")
+draw_pass_1 = SubResource("SphereMesh_lwck0")
+
+[connection signal="finished" from="GPUParticles3D3" to="." method="_on_gpu_particles_3d_3_finished"]

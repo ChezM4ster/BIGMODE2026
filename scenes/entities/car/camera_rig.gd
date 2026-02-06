@@ -2,11 +2,7 @@ extends Node3D
 
 @onready var camera_3d: Camera3D = $Camera3D
 
-
-@export var period = 0.1
-@export var magnitude = 0.05
-
-func camera_shake():
+func camera_shake(period : float = 0.1, magnitude : float = 0.05):
 	var initial_transform = camera_3d.transform 
 	var elapsed_time = 0.0
 
@@ -22,3 +18,8 @@ func camera_shake():
 		await get_tree().process_frame
 
 	camera_3d.transform = initial_transform
+
+func freeze_frame(time_scale : float, duration : float) -> void:
+	Engine.time_scale = time_scale
+	await get_tree().create_timer(duration, true, false, true).timeout
+	Engine.time_scale = 1.0
