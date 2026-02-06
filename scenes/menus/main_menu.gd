@@ -1,4 +1,6 @@
-extends Control
+
+@tool
+extends ShiftContainer
 
 @export var MusicSlider: HSlider
 @export var SFXSlider: HSlider

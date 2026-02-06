@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://c6whp3vj0r7jx"]
+[gd_scene load_steps=11 format=3 uid="uid://c6whp3vj0r7jx"]
 
 [ext_resource type="PackedScene" uid="uid://jvnxibi78muh" path="res://scenes/menus/PlayerUI.tscn" id="1_2ysag"]
 [ext_resource type="Script" uid="uid://bah0yrfloaci8" path="res://scenes/levels/gameplay_loop_test.gd" id="1_m71dd"]
 [ext_resource type="Script" uid="uid://djmdinkohriec" path="res://scenes/levels/road_maker.gd" id="5_1fkri"]
 [ext_resource type="PackedScene" uid="uid://d2tgftykfff67" path="res://scenes/entities/car/car_controller.tscn" id="6_m71dd"]
 [ext_resource type="PackedScene" uid="uid://rn5ngkr55sir" path="res://scenes/menus/StartingMenu.tscn" id="7_k3pcs"]
+[ext_resource type="Script" uid="uid://0egboyafd3p0" path="res://scenes/entities/car/combo_sys.gd" id="7_sqt3d"]
 [ext_resource type="PackedScene" uid="uid://crwmxpm03x8p5" path="res://scenes/menus/PlayerGameMenu.tscn" id="8_qhywg"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m71dd"]
@@ -45,6 +46,11 @@ player = NodePath("../../CarController")
 [node name="CarController" parent="." instance=ExtResource("6_m71dd")]
 acceleration = 200.0
 air_gravity = 15.0
+
+[node name="ComboSys" type="Node" parent="." node_paths=PackedStringArray("ui", "playerConrol")]
+script = ExtResource("7_sqt3d")
+ui = NodePath("../UI/PlayerUi")
+playerConrol = NodePath("../CarController")
 
 [connection signal="GameStarted" from="UI/StartingMenu" to="." method="_on_starting_menu_game_started"]
 [connection signal="Explode" from="CarController" to="." method="_on_car_controller_explode"]

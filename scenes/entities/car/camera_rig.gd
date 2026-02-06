@@ -26,9 +26,23 @@ var current_offset: float = 0.0
 @export var drift_camera_offset: float = 3.0
 @export var drift_offset_speed: float = 10.0
 
+
+func get_camera_fov(delta: float) -> float:
+	var speed = car.get_speed().length()
+	var speed_ratio = clamp(speed / fov_max_speed, 0.0, 1.0)
+	speed_ratio = ease(speed_ratio, -1.5)
+	var target_fov = lerp(base_fov, max_fov, speed_ratio)
+	return lerp(camera.fov, target_fov, fov_speed * delta)
+
+func get_camera_rotation():
+	pass
+
+
 func _process(delta: float) -> void:
 	global_position = ball.global_position
 	rotation.y = ball.rotation.y
+	
+	camera.fov = get_camera_fov(delta)
 	#camera_align(delta)
 	#camera_fov(delta)
 	#camera_tilt(delta)
@@ -55,27 +69,16 @@ func camera_tilt(delta: float) -> void:
 	current_tilt = lerp(current_tilt, target_tilt, tilt_speed * delta)
 	current_offset = lerp(current_offset, target_offset, drift_offset_speed * delta)
 	#rotation.z = deg_to_rad(current_tilt)
-	
-
-func camera_fov(delta: float) -> void:
-	var speed = car.get_speed().length()
-	var speed_ratio = clamp(speed / fov_max_speed, 0.0, 1.0)
-	speed_ratio = ease(speed_ratio, -1.5)
-
-	var target_fov = lerp(base_fov, max_fov, speed_ratio)
-	camera.fov = lerp(camera.fov, target_fov, fov_speed * delta)
 
 func camera_shake():
 	var initial_transform = camera.transform
 	var elapsed_time = 0.0
-
 	while elapsed_time < period:
 		var offset = Vector3(
 			randf_range(-magnitude, magnitude),
 			randf_range(-magnitude, magnitude),
 			0.0
 		)
-
 		camera.transform.origin = initial_transform.origin + offset
 		elapsed_time += get_process_delta_time()
 		await get_tree().process_frame
