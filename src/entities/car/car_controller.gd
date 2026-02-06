@@ -9,6 +9,8 @@ enum {
 	LOCK
 }
 
+
+@export var camera : PlayerCamera
 @export var ground_ray: RayCast3D
 @onready var car_mesh: Node3D = $CarModel
 @onready var car_body: MeshInstance3D = $CarModel/Cube_001
@@ -82,8 +84,7 @@ func _process(delta):
 	align_mesh(delta)
 	if ball.linear_velocity.length() > 0.75:
 		handle_car_orientation(delta)
-	ground_ray.global_rotation.x = 0
-	ground_ray.global_rotation.z = 0
+
 	
 	
 func get_player_state() -> int:
