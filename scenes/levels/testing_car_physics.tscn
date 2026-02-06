@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://d2tgftykfff67" path="res://scenes/entities/car/car_controller.tscn" id="1_7304e"]
 [ext_resource type="Texture2D" uid="uid://bwj1tq7j48ifo" path="res://assets/city_skybox.hdr" id="2_1qk30"]
 [ext_resource type="PackedScene" uid="uid://xgsjck238po3" path="res://assets/models/obstacles/concrete_blockade/concrete_blockade.tscn" id="2_dnrx4"]
-[ext_resource type="PackedScene" uid="uid://drlk0cebtjr1v" path="res://scenes/Objs/oil_spill.tscn" id="3_etk4d"]
+[ext_resource type="PackedScene" uid="uid://brhqn8y8y7tht" path="res://scenes/Objs/oil_spill.tscn" id="3_etk4d"]
 [ext_resource type="PackedScene" uid="uid://dlwlm0ajgl4qe" path="res://assets/models/obstacles/buildings/building_1/building_1.tscn" id="4_lovnp"]
 [ext_resource type="PackedScene" uid="uid://l180hca6api6" path="res://assets/models/obstacles/barrel/barrel.tscn" id="5_wg2dr"]
 [ext_resource type="PackedScene" uid="uid://b7xoqxcficdfv" path="res://assets/models/obstacles/buildings/building_2/building_2.tscn" id="7_3w316"]
@@ -42,26 +42,6 @@ light_energy = 0.725
 shadow_enabled = true
 
 [node name="CarController" parent="." instance=ExtResource("1_7304e")]
-acceleration = null
-steering = null
-turn_speed = null
-turn_stop_limit = null
-body_tilt = null
-normal_gravity = null
-air_gravity = null
-max_camera_tilt = null
-base_fov = null
-max_fov = null
-fov_speed = null
-fov_max_speed = null
-drift_camera_tilt = null
-drift_tilt_speed = null
-drift_camera_offset = null
-drift_offset_speed = null
-
-[node name="CameraRig" parent="CarController" index="0"]
-period = null
-magnitude = null
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_etk4d")
