@@ -116,6 +116,17 @@ func align_mesh(delta: float) -> void:
 #region Player state methods
 func state_updater(delta: float) -> void:
 	match get_player_state():
+var oily_rotate : float = 0.0
+
+func player_input(delta : float) -> void:
+	speed_input = Input.get_axis("accelerate", "brake") * acceleration
+	rotate_input = Input.get_axis("steer_right", "steer_left") * deg_to_rad(steering)
+	
+
+#region Player state methods
+func state_updater(delta : float) -> void:
+	
+	match car_state:
 		DRIVE:
 			drive_state(delta)
 		DRIFT:
@@ -123,8 +134,12 @@ func state_updater(delta: float) -> void:
 		AIR:
 			air_state(delta)
 
-func drive_state(_delta: float) -> void:
-	if Input.is_action_just_pressed("drift") and get_rotation_input() != 0 and get_speed_input() < 0:
+func drive_state(delta : float) -> void:
+	
+	if Input.is_action_just_pressed("jump") and oily:
+		jump()
+	
+	if Input.is_action_just_pressed("drift") and !drift and rotate_input != 0 and speed_input < 0:
 		start_drift()
 	if Input.is_action_just_pressed("jump") and oily:
 		jump()
@@ -132,10 +147,15 @@ func drive_state(_delta: float) -> void:
 func drift_state(_delta: float) -> void:
 	if Input.is_action_just_released("drift") or get_speed_input() > 1:
 		stop_drift()
+	
 	if Input.is_action_just_pressed("jump") and oily and ground_ray.is_colliding():
 		jump()
 
-func air_state(_delta: float) -> void:
+func air_state(delta : float) -> void:
+	
+	if ground_ray.is_colliding():
+		car_state = DRIVE
+		
 	if can_air_dash and Input.is_action_just_pressed("drift"):
 		air_dash()
 #endregion
@@ -163,20 +183,25 @@ func jump() -> void:
 
 #region Air dash variable
 
-@export var air_dash_force: float = 30.0
-@export var air_dash_cooldown: float = 0.0
+@export var air_dash_force : float = 30.0
+@export var air_dash_cooldown : float = 0.0 
 
-var can_air_dash: bool = true
+var can_air_dash : bool = true
 
 func air_dash() -> void:
-	var dir: float = Input.get_axis("steer_left", "steer_right")
+	var dir :float = Input.get_axis("steer_left", "steer_right")
+
 	if dir == 0:
-		return
-	var right: Vector3 = car_mesh.global_transform.basis.x
-	ball.apply_central_impulse((-right * dir + Vector3.UP * 0.2).normalized() * air_dash_force)
+		return  
+
+	var right : Vector3 = car_mesh.global_transform.basis.x
+	ball.apply_central_impulse((-right * dir + Vector3.UP * 1.0).normalized() * air_dash_force)
+
 	can_air_dash = false
 
 #endregion
+
+
 #region Drift methods
 func start_drift() -> void:
 	minimum_drift = false
@@ -194,6 +219,25 @@ func stop_drift() -> void:
 	
 #endregion
 
+#region Oil related methods
+var oily : bool = false
+
+func enter_oil() -> void:
+	oily = true
+	print("Entered oil")
+
+func exit_oil() -> void:
+	oil_timer.start()
+
+@export var jump_force : float = 1000.0
+
+func jump() -> void:
+	ball.apply_central_force(Vector3.UP * jump_force)
+	can_air_dash = true
+	print("Jumping")
+
+#endregion
+
 #region Timer related methods
 @onready var drift_timer: Timer = $Timers/DriftTimer
 @onready var boost_timer: Timer = $Timers/BoostTimer
@@ -206,7 +250,7 @@ func _on_drift_timer_timeout() -> void:
 func _on_boost_timer_timeout() -> void:
 	boost = 1.0
 	print("Double boost...")
-
+	
 func _on_oil_timer_timeout() -> void:
 	oily = false
 	print("Oil over")
