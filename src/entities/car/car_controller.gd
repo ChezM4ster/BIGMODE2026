@@ -31,8 +31,8 @@ func get_turn_speed() -> float : return turn_speed * (int(get_player_state() == 
 @export var turn_stop_limit: float = 0.75
 @export var body_tilt: float = 1.0
 @export_category("Gravity")
-@export var normal_gravity: float = 10.0
-@export var air_gravity: float = 10.0
+@export var normal_gravity: float = 1.0
+@export var air_gravity: float = 1.0
 
 var drift_direction: float = 0
 var minimum_drift: bool = false
@@ -68,10 +68,10 @@ func get_speed() -> Vector3:
 	return car_mesh.global_transform.basis.z * get_speed_input() * boost
 
 func _physics_process(_delta: float) -> void:
-	car_mesh.transform.origin = ball.transform.origin
 	if get_player_state() != AIR:
 		ball.apply_central_force(get_speed())
 	apply_gravity_logic()
+	#car_mesh.transform.origin = ball.transform.origin
 
 func apply_gravity_logic() -> void:
 	if get_player_state() == AIR:
@@ -81,12 +81,20 @@ func apply_gravity_logic() -> void:
 
 func _process(delta): 
 	state_updater(delta)
-	align_mesh(delta)
+	
 	if ball.linear_velocity.length() > 0.75:
 		handle_car_orientation(delta)
+	align_mesh(delta)
 
-	
-	
+func state_updater(delta: float) -> void:
+	match get_player_state():
+		DRIVE:
+			drive_state(delta)
+		DRIFT:
+			drift_state(delta)
+		AIR:
+			air_state(delta)
+
 func get_player_state() -> int:
 	if locked:
 		return LOCK
@@ -112,18 +120,7 @@ func align_mesh(delta: float) -> void:
 		var target_basis = Basis(new_x, normal, new_z)
 		car_mesh.global_basis = car_mesh.global_basis.slerp(target_basis, delta * 10.0).orthonormalized()
 		var target_basis_ball = Basis(new_x, normal, new_z)
-		ball.global_basis = ball.global_basis.slerp(target_basis_ball, delta * 10.0).orthonormalized()
-
-
-
-func state_updater(delta: float) -> void:
-	match get_player_state():
-		DRIVE:
-			drive_state(delta)
-		DRIFT:
-			drift_state(delta)
-		AIR:
-			air_state(delta)
+		#ball.global_basis = ball.global_basis.slerp(target_basis_ball, delta * 10.0).orthonormalized()
 
 func drive_state(_delta: float) -> void:
 	if Input.is_action_just_pressed("drift") and get_rotation_input() != 0 and get_speed_input() < 0:
@@ -137,7 +134,7 @@ func drift_state(_delta: float) -> void:
 	if Input.is_action_just_pressed("jump") and oily and ground_ray.is_colliding():
 		jump()
 
-func air_state(delta : float) -> void:
+func air_state(_delta : float) -> void:
 	if can_air_dash and Input.is_action_just_pressed("drift"):
 		air_dash()
 #endregion
@@ -148,7 +145,6 @@ var oily: bool = false
 func enter_oil() -> void:
 	oily = true
 	efectsys.add("oily")
-	print("Entered oil")
 
 func exit_oil() -> void:
 	oil_timer.start()
@@ -158,10 +154,8 @@ func exit_oil() -> void:
 func jump() -> void:
 	ball.apply_central_force(Vector3.UP * jump_force)
 	can_air_dash = true
-	print("Jumping")
 
 #endregion
-
 
 #region Air dash variable
 

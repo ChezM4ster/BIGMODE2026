@@ -7,7 +7,6 @@ class_name PlayerCamera
 @export var ball: Node3D
 @export var pivot : Node3D
 
-
 @export_category("Camera Juice")
 @export var max_camera_tilt: float = 15.0
 @export var camera_tilt_speed: float = 6.0

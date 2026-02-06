@@ -11,8 +11,6 @@
 radius = 1.0
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_p8s8u"]
-friction = 0.0
-absorbent = true
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_83ose"]
 radius = 0.1
@@ -31,10 +29,9 @@ script = ExtResource("2_3h17m")
 script = ExtResource("3_uece1")
 
 [node name="CarModel" parent="." instance=ExtResource("1_7ri6m")]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)
 
 [node name="Cube_001" parent="CarModel" index="3"]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0.08879, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0.05818808, 0)
 
 [node name="Cube" parent="CarModel/Cube_001" index="0"]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
@@ -42,31 +39,35 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0
 [node name="Camera_Pivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9063077, 0.42261824, 0, -0.42261824, 0.9063077, 0, 1.7636722, -1.4673301)
 
-[node name="CameraRig" type="SpringArm3D" parent="Camera_Pivot"]
+[node name="CameraRig" type="SpringArm3D" parent="Camera_Pivot" node_paths=PackedStringArray("car", "ball", "pivot")]
 transform = Transform3D(1, 0, 0, 0, 0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0)
 collision_mask = 2
 shape = SubResource("SphereShape3D_uece1")
 spring_length = 8.0
 script = ExtResource("3_83ose")
+car = NodePath("../..")
+ball = NodePath("../../Ball")
+pivot = NodePath("..")
 
 [node name="Camera3D" type="Camera3D" parent="Camera_Pivot/CameraRig"]
 current = true
 
 [node name="Ball" type="RigidBody3D" parent="." groups=["car"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0914588, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09910929, 0)
 physics_material_override = SubResource("PhysicsMaterial_p8s8u")
 lock_rotation = true
 linear_damp = 2.0
 angular_damp = 5.0
 
-[node name="GroundRay" type="RayCast3D" parent="Ball"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4730302, 0.0046699643)
-target_position = Vector3(0, -3.36, -2.525)
+[node name="GroundRay" type="RayCast3D" parent="Ball" node_paths=PackedStringArray("car")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4730302, 0.82885957)
+target_position = Vector3(0, -3.36, 0)
 collision_mask = 3
 hit_from_inside = true
 debug_shape_custom_color = Color(1, 0, 0, 1)
 debug_shape_thickness = 5
 script = ExtResource("6_2qqbi")
+car = NodePath("../..")
 
 [node name="collison_detetor" type="Area3D" parent="Ball"]
 
