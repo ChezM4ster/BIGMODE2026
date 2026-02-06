@@ -45,15 +45,7 @@ player = NodePath("../../CarController")
 
 [node name="CarController" parent="." instance=ExtResource("6_m71dd")]
 acceleration = 200.0
-steering = null
-turn_speed = null
-turn_stop_limit = null
-body_tilt = null
-normal_gravity = null
 air_gravity = 15.0
-jump_force = null
-air_dash_force = null
-air_dash_cooldown = null
 
 [node name="ComboSys" type="Node" parent="." node_paths=PackedStringArray("ui", "playerConrol")]
 script = ExtResource("7_sqt3d")

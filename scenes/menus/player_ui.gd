@@ -3,13 +3,22 @@ class_name PlayerUI
 class combo:
 	static var all_combo : Array[combo] = []
 	static var TotalPoints : int
+	
+	# public
 	var root_node : Node 
 	var TEXT : String 
 	var combo_time = 1 
 	var count = 1
 	var point_value = 100
+	
+	
+	#private 
 	var timer : Timer
 	var label : Label
+	
+	var label_size_y = 78
+	var offset_ : Vector2 = Vector2(10 , 10)
+	
 	
 	static func get_text(new_text_ : String , count_ : int):
 		return new_text_ + " x " + str(count_)  
@@ -34,16 +43,19 @@ class combo:
 		if label == null :
 			label = Label.new()
 			label.text = get_text(TEXT , count)
-			label.position.y = all_combo.find(self) * 78
+			label.position.x = offset_.x 
+			
+			var label_index = all_combo.find(self) - 1
+			label.position.y =  offset_.y + label_index * label_size_y
 			root_node.add_child(label)
 	
 	func refresh_label():
 		create_label()
 		label.text = get_text(TEXT , count)
-		label.position.y = all_combo.find(self) * 78
+		var label_index = all_combo.find(self) - 1
+		label.position.y = offset_.y + label_index * label_size_y
 	
 	func _init(text_ : String , time : float , point_val : int , root_node_ : Node) -> void:
-		
 		if all_combo.any(func(c : combo) : return c.TEXT == text_):
 			var refresh_combo : combo = all_combo.filter(func(c : combo) : return c.TEXT == text_).back()
 			refresh_combo.set_timer(time) 
