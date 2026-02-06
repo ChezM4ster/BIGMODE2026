@@ -49,7 +49,7 @@ class combo:
 	func refresh_label():
 		create_label()
 		label.text = get_text(TEXT , count)
-		prints(label.text , label.visible , label.position , all_combo.find(self) , all_combo.size())
+		#prints(label.text , label.visible , label.position , all_combo.find(self) , all_combo.size())
 		var label_index = all_combo.find(self) 
 		label.position.y = offset_.y + label_index * label_size_y
 	

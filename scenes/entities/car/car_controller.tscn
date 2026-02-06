@@ -21,7 +21,7 @@ height = 2.487442
 
 [node name="CarController" type="Node" node_paths=PackedStringArray("ground_ray")]
 script = ExtResource("1_p8s8u")
-ground_ray = NodePath("GroundRay")
+ground_ray = NodePath("Ball/GroundRay")
 
 [node name="effectsSys" type="Node" parent="."]
 script = ExtResource("2_3h17m")
@@ -44,9 +44,8 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0
 [node name="Circle_002" parent="CarModel" index="5"]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, 0)
 
-[node name="GroundRay" type="RayCast3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.058990538, 0.7062706)
-target_position = Vector3(0, -2.32, 0)
+[node name="GroundRay_pivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.18578058, -0.7710973)
 
 [node name="Camera_Pivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9063077, 0.42261824, 0, -0.42261824, 0.9063077, 0, 1.7636722, -1.4673301)
@@ -72,12 +71,19 @@ lock_rotation = true
 linear_damp = 2.0
 angular_damp = 5.0
 
+[node name="GroundRay" type="RayCast3D" parent="Ball"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4730302, 0.0046699643)
+target_position = Vector3(0, -3.36, -2.525)
+collision_mask = 3
+hit_from_inside = true
+debug_shape_custom_color = Color(1, 0, 0, 1)
+debug_shape_thickness = 5
+
 [node name="collison_detetor" type="Area3D" parent="Ball"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ball/collison_detetor"]
-transform = Transform3D(0.9168999, 0, 0.39911717, -0.0054193106, 0.9999078, 0.012449891, -0.39908037, -0.0135782445, 0.9168154, 0, 0.51520807, -1.2905946)
+transform = Transform3D(0.9168999, 0, 0.39911717, -0.0054193106, 0.9999078, 0.012449891, -0.39908037, -0.0135782445, 0.9168154, 0, 0.62076706, -1.2188208)
 shape = SubResource("SphereShape3D_83ose")
-disabled = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ball"]
 transform = Transform3D(1, 0, 0, 0, -0.005951518, 0.9999823, 0, -0.9999823, -0.005951518, 0, 0.34792143, 0)

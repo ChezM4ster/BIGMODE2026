@@ -27,9 +27,9 @@ func get_steering() -> float: return steering * efectsys.get_stearing_mult() * u
 func get_turn_speed() -> float : return turn_speed * (int(get_player_state() == AIR) + 1 )
 
 @export var turn_stop_limit: float = 0.75
-@export var body_tilt: float = 35.0
+@export var body_tilt: float = 1.0
 @export_category("Gravity")
-@export var normal_gravity: float = 5.0
+@export var normal_gravity: float = 10.0
 @export var air_gravity: float = 10.0
 
 var drift_direction: float = 0
@@ -76,30 +76,31 @@ func apply_gravity_logic() -> void:
 		ball.gravity_scale = air_gravity
 	else:
 		ball.gravity_scale = normal_gravity
-	
-func _process(delta):
-	$GroundRay.position = $CarModel.position
+
+func _process(delta): 
 	state_updater(delta)
 	align_mesh(delta)
 	if ball.linear_velocity.length() > 0.75:
 		handle_car_orientation(delta)
+	ground_ray.global_rotation.x = 0
+	ground_ray.global_rotation.z = 0
+	
 	
 func get_player_state() -> int:
 	if locked:
 		return LOCK
-	if ground_ray.is_colliding():
+	elif ground_ray.is_colliding():
 		if Input.is_action_just_pressed("drift") and Input.get_axis("steer_right", "steer_left") != 0 and get_speed_input() < 1:
 			return DRIFT
 		else:
 			return DRIVE
 	else:
 		return AIR
-	
+
 func handle_car_orientation(delta: float) -> void:
 	car_mesh.rotate_object_local(Vector3.UP, get_rotation_input() * get_turn_speed() * delta)
 	var lean_target: float = - get_rotation_input() * body_tilt
-	car_body.rotation.z = lerp_angle(car_body.rotation.z, lean_target, 5 * delta)
-
+	car_body.rotation.z = lerp(car_body.rotation.z, lean_target, 5 * delta)
 
 func align_mesh(delta: float) -> void:
 	if ground_ray.is_colliding():
@@ -138,7 +139,6 @@ func air_state(_delta: float) -> void:
 	if can_air_dash and Input.is_action_just_pressed("drift"):
 		air_dash()
 #endregion
-
 
 #region Oil related methods
 var oily: bool = false

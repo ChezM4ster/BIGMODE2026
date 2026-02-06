@@ -3,7 +3,6 @@ class_name EfectSystem
 
 class efect:
 	static var ActiveEffects: Array[efect] = []
-	
 	var efect_time = 1
 	var speed_mult := 1.0
 	var steering_mult := 1.0
@@ -13,8 +12,9 @@ class efect:
 	
 	signal efect_ended
 	
-	func _init(root_node_: Node, stearing_mult_ = 1.0, speed_mult_ = 1.0) -> void:
+	func _init(root_node_: Node, efect_time_ : float ,stearing_mult_ = 1.0, speed_mult_ = 1.0) -> void:
 		root_node = root_node_
+		efect_time = efect_time_
 		steering_mult = stearing_mult_
 		speed_mult = speed_mult_
 		ActiveEffects.append(self )
@@ -33,9 +33,9 @@ class efect:
 func add(efect_name: String):
 	match efect_name:
 		"oily":
-			efect.new(self , 1.5, 1.3)
+			efect.new(self , 3 , 1.5, 1.3)
 		"boost":
-			efect.new(self , 1, 2)
+			efect.new(self , 1.4 , 1, 2)
 		_:
 			push_warning("unknown effect : ", efect_name)
 
